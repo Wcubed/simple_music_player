@@ -2,7 +2,7 @@ extends PanelContainer
 
 
 onready var _stream_player := $AudioStreamPlayer
-onready var _seconds_timer := $SecondsTimer
+onready var _update_timer := $UpdateTimer
 
 onready var _total_time_label := find_node("TotalTimeLabel")
 onready var _current_time_label := find_node("CurrentTimeLabel")
@@ -24,7 +24,7 @@ func _ready():
 	_current_time_label.text = _seconds_to_time_string(0)
 	_seek_slider.max_value = _stream_length_seconds
 	
-	_seconds_timer.start()
+	_update_timer.start()
 
 
 func _seconds_to_time_string(seconds: float) -> String:
@@ -36,7 +36,11 @@ func _seconds_to_time_string(seconds: float) -> String:
 	return "%d:%02d:%02d" % [hours, minutes, seconds]
 
 
-func _on_SecondsTimer_timeout():
+func _on_UpdateTimer_timeout():
 	var playback_seconds: float = _stream_player.get_playback_position()
 	_current_time_label.text = _seconds_to_time_string(playback_seconds)
 	_seek_slider.value = playback_seconds
+
+
+func _on_SeekSlider_value_changed(value: float):
+	_stream_player.seek(value)
