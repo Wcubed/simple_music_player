@@ -20,6 +20,10 @@ run/main_scene="res://ui/main.tscn"
 run/low_processor_mode=true
 config/icon="res://icon.png"
 
+[gui]
+
+theme/custom="res://ui/resources/main_theme.theme"
+
 [input]
 
 ui_seek_to_time={
