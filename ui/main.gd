@@ -56,18 +56,44 @@ func _seek_to_current_mouse_position():
 	_progress_seconds = (x * _stream_length_seconds) / max_x
 	_progress_seconds = clamp(_progress_seconds, 0, _stream_length_seconds)
 	
-	_stream_player.seek(_progress_seconds)
-	_update_ui_to_timecode(_progress_seconds)
+	_seek_to_timecode(_progress_seconds)
 
+func _seek_to_timecode(seconds: float):
+	seconds = clamp(seconds, 0, _stream_length_seconds)
+	_stream_player.seek(seconds)
+	_update_ui_to_timecode(seconds)
 
 func _update_ui_to_timecode(seconds: float):
-	_current_time_label.text = _seconds_to_time_string(_progress_seconds)
-	_progress_bar.value = _progress_seconds
+	_current_time_label.text = _seconds_to_time_string(seconds)
+	_progress_bar.value = seconds
 
 
 func _on_UpdateTimer_timeout():
 	_progress_seconds = _stream_player.get_playback_position()
 	_update_ui_to_timecode(_progress_seconds)
+
+
+func _unhandled_key_input(event):
+	if event.is_action_pressed("ui_right"):
+		_progress_seconds += 10
+		_seek_to_timecode(_progress_seconds)
+		get_tree().set_input_as_handled()
+		
+	elif event.is_action_pressed("ui_left"):
+		_progress_seconds -= 10
+		_seek_to_timecode(_progress_seconds)
+		get_tree().set_input_as_handled()
+		
+	elif event.is_action_released("ui_accept"):
+		if _play_pause_button.has_focus():
+			return
+		
+		_play_pause_button.grab_focus()
+		if _stream_player.playing:
+			_pause_audio()
+		else:
+			_play_audio()
+		get_tree().set_input_as_handled()
 
 
 func _on_ProgressBar_gui_input(event: InputEvent):
