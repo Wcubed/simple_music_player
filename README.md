@@ -15,4 +15,4 @@ Extra features
 - Add and remove song library directories.
 	- Keep libraries between restarts.
 - Cache which songs are in a library.
-- Shuffle, but only play each song exactly once before repeating.
+- x Shuffle, but only play each song exactly once before repeating.
