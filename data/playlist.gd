@@ -34,11 +34,14 @@ func get_currently_playing_idx() -> int:
 	return _currently_playing
 
 
-func get_song_by_index(idx: int) -> Object:
+func play_song_by_index(idx: int) -> Object:
+	var previous = _currently_playing
+	_currently_playing = idx
+	emit_signal("currently_playing_updated", _currently_playing, previous)
 	return _songs[idx]
 
 
-func get_next_song_to_play(shuffle: bool = false) -> Object:
+func play_next_song(shuffle: bool = false) -> Object:
 	var previous_playing = _currently_playing
 	
 	if not shuffle:

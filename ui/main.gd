@@ -29,11 +29,11 @@ func _show_file_popup():
 
 
 func _play_next_song():
-	_play_song(_playlist.get_next_song_to_play(_playback_controls.get_shuffle()))
+	_play_song(_playlist.play_next_song(_playback_controls.get_shuffle()))
 
 
 func _play_song_by_playlist_index(idx: int):
-	_play_song(_playlist.get_song_by_index(idx))
+	_play_song(_playlist.play_song_by_index(idx))
 
 
 func _play_song(song: Object):
