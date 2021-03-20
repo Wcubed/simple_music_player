@@ -7,6 +7,7 @@ Basic needed features
 - x Shuffle
 - x Next song button.
 - x Load all songs in a directory
+  - x and subdirectories
 
 Extra features
 - Previous song button? How would that work with shuffle?

@@ -73,6 +73,7 @@ margin_top = 1.0
 margin_right = 920.0
 margin_bottom = 23.0
 size_flags_horizontal = 3
+clip_text = true
 
 [node name="VolumeSlider" type="HSlider" parent="BottomContainer"]
 margin_left = 924.0

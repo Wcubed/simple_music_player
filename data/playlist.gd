@@ -96,6 +96,10 @@ func add_song(path: String, emit_signal: bool = true):
 	_songs.append(song)
 	_shuffled_idxs_still_to_play[_songs.size()-1] = null
 
+func _load_detached_cover_art(path: String):
+	# TODO:
+	pass
+
 
 func add_songs(paths: Array):
 	for path in paths:
@@ -105,6 +109,10 @@ func add_songs(paths: Array):
 
 
 func add_songs_from_directory(path: String):
+	_add_songs_from_directory_recursive(path)
+	emit_signal("playlist_songs_updated")
+
+func _add_songs_from_directory_recursive(path: String):
 	var dir := Directory.new()
 	dir.open(path)
 	
@@ -112,14 +120,17 @@ func add_songs_from_directory(path: String):
 	var result := {}
 	while true:
 		var file: String = dir.get_next()
+		var full_path: String = path + "/" + file
+		
 		if file == "":
 			break
-		if _file_matches_filters(file):
-			add_song(path + "/" + file)
+		if dir.current_is_dir():
+			# Recurse!
+			_add_songs_from_directory_recursive(full_path)
+		elif _file_matches_filters(full_path):
+			add_song(full_path)
 	
 	dir.list_dir_end()
-	emit_signal("playlist_songs_updated")
-
 
 func _file_matches_filters(path: String) -> bool:
 	var valid := false
