@@ -3,6 +3,7 @@ extends VBoxContainer
 signal play_requested()
 signal pause_requested()
 signal seek_requested(seconds)
+signal open_file_requested()
 
 var _paused := true
 
@@ -17,6 +18,7 @@ onready var _song_title := $BottomContainer/SongTitleLabel
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	update_time_playing(0)
+	update_total_time(0)
 	update_paused(true)
 
 
@@ -38,6 +40,10 @@ func update_paused(paused: bool):
 		_play_pause_button.text = ">"
 	else:
 		_play_pause_button.text = "||"
+
+
+func update_song_title(title: String):
+	_song_title.text = title
 
 
 func _seconds_to_time_string(seconds: float) -> String:
@@ -71,3 +77,7 @@ func _on_SongProgress_gui_input(event: InputEvent):
 		_seek_to_current_mouse_position()
 	elif event is InputEventMouseMotion and Input.is_action_pressed("ui_seek_to_time"):
 		_seek_to_current_mouse_position()
+
+
+func _on_OpenButton_pressed():
+	emit_signal("open_file_requested")
