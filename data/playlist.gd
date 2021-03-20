@@ -1,5 +1,8 @@
 extends Node
 
+signal playlist_songs_updated()
+signal currently_playing_updated(idx, previous_idx)
+
 const FILE_FILTERS := ["*.wav", "*.ogg"]
 
 
@@ -15,7 +18,17 @@ func _ready():
 	pass # Replace with function body.
 
 
+func get_songs() -> Array:
+	return _songs
+
+
+func get_currently_playing_idx() -> int:
+	return _currently_playing
+
+
 func get_next_song_to_play() -> Object:
+	var previous_playing = _currently_playing
+	
 	if _currently_playing < 0 or _currently_playing >= _songs.size() -1:
 		_currently_playing = 0
 	else:
@@ -24,10 +37,11 @@ func get_next_song_to_play() -> Object:
 	if _songs.empty():
 		return null
 	
+	emit_signal("currently_playing_updated", _currently_playing, previous_playing)
 	return _songs[_currently_playing]
 
 
-func add_song(path: String):
+func add_song(path: String, emit_signal: bool = true):
 	if not _file_matches_filters(path):
 		print("File does not have a recognized extension, skipping: '%s'" % path)
 		return
@@ -50,7 +64,9 @@ func add_song(path: String):
 
 func add_songs(paths: Array):
 	for path in paths:
-		add_song(path)
+		add_song(path, false)
+	
+	emit_signal("playlist_songs_updated")
 
 
 func add_songs_from_directory(path: String):
@@ -67,7 +83,7 @@ func add_songs_from_directory(path: String):
 			add_song(path + "/" + file)
 	
 	dir.list_dir_end()
-	return result
+	emit_signal("playlist_songs_updated")
 
 
 func _file_matches_filters(path: String) -> bool:

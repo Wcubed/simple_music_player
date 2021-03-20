@@ -3,9 +3,9 @@ Basic needed features
 - x Pause song
 - x Load song
 - Show list of songs
-- Select song form list
+- Select song from list
 - Shuffle
-- Load all songs in a directory
+- x Load all songs in a directory
 
 Extra features
 - Volume controls

@@ -9,6 +9,7 @@ onready var _audio_importer := $AudioImporter
 onready var _stream_player := $AudioStreamPlayer
 onready var _update_timer := $UpdateTimer
 
+onready var _playlist_ui := $VBoxContainer/PlaylistUi
 onready var _playback_controls := $VBoxContainer/PlaybackControls
 
 onready var _song_load_dialog := $SongLoadDialog
@@ -17,6 +18,7 @@ onready var _song_load_dialog := $SongLoadDialog
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	_song_load_dialog.filters = _playlist.FILE_FILTERS
+	_playlist_ui.set_playlist(_playlist)
 
 
 func _show_file_popup():
