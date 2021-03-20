@@ -1,5 +1,8 @@
 extends PanelContainer
 
+const MAX_VOLUME_DB := 0.0
+const MIN_VOLUME_DB := -30.0
+
 var _stream_total_length: float = 0
 var _playback_time: float = 0
 
@@ -19,6 +22,8 @@ onready var _song_load_dialog := $SongLoadDialog
 func _ready():
 	_song_load_dialog.filters = _playlist.FILE_FILTERS
 	_playlist_ui.set_playlist(_playlist)
+	
+	_set_volume(0.8)
 	
 	# For speeding up testing turnaround.
 	_playlist.add_songs_from_directory("D:/simple_music_player_test")
@@ -88,6 +93,12 @@ func _seek_timecode(seconds: float):
 	_playback_controls.update_time_playing(_playback_time)
 
 
+# Volume is between 0 and 1.0.
+func _set_volume(volume: float):
+	_playback_controls.update_volume(volume)
+	_stream_player.volume_db = lerp(MIN_VOLUME_DB, MAX_VOLUME_DB, volume)
+
+
 func _on_UpdateTimer_timeout():
 	_playback_time = _stream_player.get_playback_position()
 	_playback_controls.update_time_playing(_playback_time)
@@ -141,3 +152,7 @@ func _on_PlaylistUi_play_song_by_index_requested(idx: int):
 
 func _on_PlaybackControls_next_song_requested():
 	_play_next_song()
+
+
+func _on_PlaybackControls_volume_change_requested(new_volume: float):
+	_set_volume(new_volume)

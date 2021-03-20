@@ -5,6 +5,8 @@ signal pause_requested()
 signal seek_requested(seconds)
 signal open_file_requested()
 signal next_song_requested()
+# Volume is in range [0, 1]
+signal volume_change_requested(new_volume)
 
 var _paused := true
 
@@ -15,6 +17,7 @@ onready var _song_progress := $TopContainer/SongProgress
 onready var _play_pause_button := $BottomContainer/PlayPauseButton
 onready var _shuffle_button := $BottomContainer/ShuffleButton
 onready var _song_title := $BottomContainer/SongTitleLabel
+onready var _volume_slider := $BottomContainer/VolumeSlider
 
 
 # Called when the node enters the scene tree for the first time.
@@ -50,6 +53,10 @@ func update_paused(paused: bool):
 
 func update_song_title(title: String):
 	_song_title.text = title
+
+
+func update_volume(volume: float):
+	_volume_slider.value = volume
 
 
 func _seconds_to_time_string(seconds: float) -> String:
@@ -91,3 +98,7 @@ func _on_OpenButton_pressed():
 
 func _on_NextSongButton_pressed():
 	emit_signal("next_song_requested")
+
+
+func _on_VolumeSlider_value_changed(value: float):
+	emit_signal("volume_change_requested", value)

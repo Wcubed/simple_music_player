@@ -10,7 +10,7 @@ Basic needed features
 
 Extra features
 - Previous song button? How would that work with shuffle?
-- Volume controls
+- x Volume slider
 - Load an image in the same directory as cover art
 - Add and remove song library directories.
 	- Keep libraries between restarts.
