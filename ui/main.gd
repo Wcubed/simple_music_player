@@ -1,37 +1,42 @@
 extends PanelContainer
 
-
-const FILE_FILTERS := ["*.mp3", "*.wav", "*.ogg"]
-
-
 var _stream_total_length: float = 0
 var _playback_time: float = 0
 
+onready var _playlist := $Playlist
+onready var _audio_importer := $AudioImporter
 
 onready var _stream_player := $AudioStreamPlayer
 onready var _update_timer := $UpdateTimer
 
-onready var _playback_controls := $PlaybackControls
+onready var _playback_controls := $VBoxContainer/PlaybackControls
 
-onready var _file_dialog := $FileDialog
+onready var _song_load_dialog := $SongLoadDialog
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	_file_dialog.filters = FILE_FILTERS
+	_song_load_dialog.filters = _playlist.FILE_FILTERS
 
 
 func _show_file_popup():
-	_file_dialog.popup_centered(Vector2(410, 400))
+	_song_load_dialog.popup_centered(Vector2(700, 400))
 
 
-func _play_audio_file(path: String):
-	var audio_stream: AudioStream = load(path)
+func _play_next_song():
+	_play_song(_playlist.get_next_song_to_play())
+
+
+func _play_song(song: Object):
+	if song == null:
+		return
+	
+	var audio_stream: AudioStream = _audio_importer.loadfile(song.path)
 	_stream_player.stream = audio_stream
 	_stream_total_length = audio_stream.get_length()
 	_playback_time = 0
 	
-	_playback_controls.update_song_title(path)
+	_playback_controls.update_song_title(song.title)
 	_playback_controls.update_total_time(_stream_total_length)
 	_playback_controls.update_time_playing(_playback_time)
 	
@@ -40,6 +45,7 @@ func _play_audio_file(path: String):
 
 func _play_audio():
 	if _stream_player.stream == null:
+		call_deferred("_play_next_song")
 		return
 	
 	_update_timer.start()
@@ -59,10 +65,7 @@ func _pause_audio():
 
 
 func _audio_finished():
-	_pause_audio()
-	# Show the progress as fininshed, but start from the beginning next time
-	_playback_controls.update_time_playing(_playback_time)
-	_playback_time = 0
+	_play_next_song()
 
 
 func _seek_timecode(seconds: float):
@@ -102,9 +105,6 @@ func _on_PlaybackControls_seek_requested(seconds: float):
 	_seek_timecode(seconds)
 
 
-func _on_FileDialog_file_selected(path: String):
-	_play_audio_file(path)
-
 
 func _on_PlaybackControls_open_file_requested():
 	_show_file_popup()
@@ -112,3 +112,15 @@ func _on_PlaybackControls_open_file_requested():
 
 func _on_AudioStreamPlayer_finished():
 	_audio_finished()
+
+
+func _on_SongLoadDialog_file_selected(path: String):
+	_playlist.add_song(path)
+
+
+func _on_SongLoadDialog_files_selected(paths: Array):
+	_playlist.add_songs(paths)
+
+
+func _on_SongLoadDialog_dir_selected(dir: String):
+	_playlist.add_songs_from_directory(dir)

@@ -1,0 +1,10 @@
+[gd_scene format=2]
+
+[node name="PlaylistEntry" type="HBoxContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Title" type="Label" parent="."]
+margin_top = 289.0
+margin_right = 8.0
+margin_bottom = 311.0

@@ -1,8 +1,11 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://ui/main.gd" type="Script" id=1]
 [ext_resource path="res://ui/playback_controls.tscn" type="PackedScene" id=2]
 [ext_resource path="res://ui/resources/main_theme.theme" type="Theme" id=3]
+[ext_resource path="res://ui/playlist_ui.tscn" type="PackedScene" id=4]
+[ext_resource path="res://data/playlist.gd" type="Script" id=5]
+[ext_resource path="res://third_party/GDScriptAudioImport.gd" type="Script" id=6]
 
 [node name="Main" type="PanelContainer"]
 anchor_right = 1.0
@@ -12,32 +15,54 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="Playlist" type="Node" parent="."]
+script = ExtResource( 5 )
+
+[node name="AudioImporter" type="Node" parent="."]
+script = ExtResource( 6 )
+
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 
 [node name="UpdateTimer" type="Timer" parent="."]
 wait_time = 0.2
 
-[node name="PlaybackControls" parent="." instance=ExtResource( 2 )]
-anchor_right = 0.0
-anchor_bottom = 0.0
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
 margin_left = 5.0
 margin_top = 5.0
 margin_right = 1019.0
 margin_bottom = 595.0
 
-[node name="FileDialog" type="FileDialog" parent="."]
+[node name="PlaylistUi" parent="VBoxContainer" instance=ExtResource( 4 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 1014.0
+margin_bottom = 535.0
+
+[node name="PlaybackControls" parent="VBoxContainer" instance=ExtResource( 2 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 539.0
+margin_right = 1014.0
+margin_bottom = 590.0
+
+[node name="SongLoadDialog" type="FileDialog" parent="."]
 margin_left = 5.0
 margin_top = 5.0
 margin_right = 1019.0
 margin_bottom = 595.0
 theme = ExtResource( 3 )
-window_title = "Open a File"
+window_title = "Open a File or Directory"
 resizable = true
-mode = 0
+mode = 3
+access = 2
+current_dir = "/WybeData/Projects/Godot/Programs/simple_music_player"
+current_path = "/WybeData/Projects/Godot/Programs/simple_music_player/"
 [connection signal="finished" from="AudioStreamPlayer" to="." method="_on_AudioStreamPlayer_finished"]
 [connection signal="timeout" from="UpdateTimer" to="." method="_on_UpdateTimer_timeout"]
-[connection signal="open_file_requested" from="PlaybackControls" to="." method="_on_PlaybackControls_open_file_requested"]
-[connection signal="pause_requested" from="PlaybackControls" to="." method="_on_PlaybackControls_pause_requested"]
-[connection signal="play_requested" from="PlaybackControls" to="." method="_on_PlaybackControls_play_requested"]
-[connection signal="seek_requested" from="PlaybackControls" to="." method="_on_PlaybackControls_seek_requested"]
-[connection signal="file_selected" from="FileDialog" to="." method="_on_FileDialog_file_selected"]
+[connection signal="open_file_requested" from="VBoxContainer/PlaybackControls" to="." method="_on_PlaybackControls_open_file_requested"]
+[connection signal="pause_requested" from="VBoxContainer/PlaybackControls" to="." method="_on_PlaybackControls_pause_requested"]
+[connection signal="play_requested" from="VBoxContainer/PlaybackControls" to="." method="_on_PlaybackControls_play_requested"]
+[connection signal="seek_requested" from="VBoxContainer/PlaybackControls" to="." method="_on_PlaybackControls_seek_requested"]
+[connection signal="dir_selected" from="SongLoadDialog" to="." method="_on_SongLoadDialog_dir_selected"]
+[connection signal="file_selected" from="SongLoadDialog" to="." method="_on_SongLoadDialog_file_selected"]
+[connection signal="files_selected" from="SongLoadDialog" to="." method="_on_SongLoadDialog_files_selected"]

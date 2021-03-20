@@ -1,7 +1,7 @@
 Basic needed features
-- Play song
-- Pause song
-- Load song
+- x Play song
+- x Pause song
+- x Load song
 - Show list of songs
 - Select song form list
 - Shuffle
