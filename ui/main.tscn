@@ -24,7 +24,7 @@ script = ExtResource( 6 )
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 
 [node name="UpdateTimer" type="Timer" parent="."]
-wait_time = 0.2
+wait_time = 0.5
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 margin_left = 5.0
@@ -55,8 +55,8 @@ window_title = "Open a File or Directory"
 resizable = true
 mode = 3
 access = 2
-current_dir = "/WybeData/Projects/Godot/Programs/simple_music_player"
-current_path = "/WybeData/Projects/Godot/Programs/simple_music_player/"
+current_dir = "/WybeData/Library/Music"
+current_path = "/WybeData/Library/Music/"
 [connection signal="finished" from="AudioStreamPlayer" to="." method="_on_AudioStreamPlayer_finished"]
 [connection signal="timeout" from="UpdateTimer" to="." method="_on_UpdateTimer_timeout"]
 [connection signal="play_song_by_index_requested" from="VBoxContainer/PlaylistUi" to="." method="_on_PlaylistUi_play_song_by_index_requested"]

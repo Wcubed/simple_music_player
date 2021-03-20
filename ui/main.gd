@@ -24,9 +24,6 @@ func _ready():
 	_playlist_ui.set_playlist(_playlist)
 	
 	_set_volume(0.8)
-	
-	# For speeding up testing turnaround.
-	_playlist.add_songs_from_directory("D:/simple_music_player_test")
 
 
 func _show_file_popup():

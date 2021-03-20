@@ -10,6 +10,7 @@ var PlaylistEntry := preload("playlist_entry.tscn")
 var _playlist: Node = null
 
 
+onready var _scroll_container := $ScrollContainer
 onready var _container := $ScrollContainer/PlaylistContainer
 
 # Called when the node enters the scene tree for the first time.
@@ -42,7 +43,10 @@ func _on_playlist_songs_updated():
 func _on_playlist_currently_playing_updated(current: int, previous: int):
 	if previous >= 0:
 		_container.get_child(previous).show_currently_playing(false)
-	_container.get_child(current).show_currently_playing(true)
+	
+	var current_playing := _container.get_child(current)
+	current_playing.show_currently_playing(true)
+	
 
 
 func _on_entry_pointer_selected_by_pointer(idx: int):
