@@ -1,6 +1,6 @@
 extends Node
 
-const FILE_FILTERS := ["*.mp3", "*.wav", "*.ogg"]
+const FILE_FILTERS := ["*.wav", "*.ogg"]
 
 
 var Song := preload("song.gd")

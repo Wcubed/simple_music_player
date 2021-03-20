@@ -50,6 +50,7 @@ func _play_audio():
 	
 	_update_timer.start()
 	_stream_player.play(_playback_time)
+	_stream_player.stream_paused = false
 	
 	_playback_controls.update_paused(false)
 
@@ -59,7 +60,7 @@ func _pause_audio():
 		return
 	
 	_update_timer.stop()
-	_stream_player.stop()
+	_stream_player.stream_paused = true
 	
 	_playback_controls.update_paused(true)
 
@@ -103,7 +104,6 @@ func _on_PlaybackControls_play_requested():
 
 func _on_PlaybackControls_seek_requested(seconds: float):
 	_seek_timecode(seconds)
-
 
 
 func _on_PlaybackControls_open_file_requested():
