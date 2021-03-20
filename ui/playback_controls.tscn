@@ -48,17 +48,31 @@ margin_right = 47.0
 margin_bottom = 25.0
 text = "Open"
 
-[node name="PlayPauseButton" type="Button" parent="BottomContainer"]
+[node name="ShuffleButton" type="Button" parent="BottomContainer"]
 margin_left = 51.0
-margin_right = 76.0
+margin_right = 106.0
+margin_bottom = 25.0
+toggle_mode = true
+text = "Shuffle"
+
+[node name="PlayPauseButton" type="Button" parent="BottomContainer"]
+margin_left = 110.0
+margin_right = 135.0
 margin_bottom = 25.0
 rect_min_size = Vector2( 25, 25 )
 
+[node name="NextSongButton" type="Button" parent="BottomContainer"]
+margin_left = 139.0
+margin_right = 174.0
+margin_bottom = 25.0
+text = ">>|"
+
 [node name="SongTitleLabel" type="Label" parent="BottomContainer"]
-margin_left = 80.0
+margin_left = 178.0
 margin_top = 1.0
-margin_right = 88.0
+margin_right = 186.0
 margin_bottom = 23.0
 [connection signal="gui_input" from="TopContainer/SongProgress" to="." method="_on_SongProgress_gui_input"]
 [connection signal="pressed" from="BottomContainer/OpenButton" to="." method="_on_OpenButton_pressed"]
 [connection signal="pressed" from="BottomContainer/PlayPauseButton" to="." method="_on_PlayPauseButton_pressed"]
+[connection signal="pressed" from="BottomContainer/NextSongButton" to="." method="_on_NextSongButton_pressed"]

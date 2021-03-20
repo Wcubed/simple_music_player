@@ -2,12 +2,14 @@ Basic needed features
 - x Play song
 - x Pause song
 - x Load song
-- Show list of songs
-- Select song from list
-- Shuffle
+- x Show list of songs
+- x Select song from list
+- x Shuffle
+- x Next song button.
 - x Load all songs in a directory
 
 Extra features
+- Previous song button? How would that work with shuffle?
 - Volume controls
 - Load an image in the same directory as cover art
 - Add and remove song library directories.

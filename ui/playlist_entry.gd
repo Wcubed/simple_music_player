@@ -1,6 +1,6 @@
 extends HBoxContainer
 
-signal selected_by_pointer
+signal selected_by_pointer()
 
 const PLAYING_COLOR = Color(0.3, 1.0, 0.3)
 const NOT_PLAYING_COLOR = Color(0.9, 0.9, 0.9)

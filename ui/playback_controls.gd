@@ -4,6 +4,7 @@ signal play_requested()
 signal pause_requested()
 signal seek_requested(seconds)
 signal open_file_requested()
+signal next_song_requested()
 
 var _paused := true
 
@@ -12,6 +13,7 @@ onready var _total_time := $TopContainer/TotalTimeLabel
 onready var _song_progress := $TopContainer/SongProgress
 
 onready var _play_pause_button := $BottomContainer/PlayPauseButton
+onready var _shuffle_button := $BottomContainer/ShuffleButton
 onready var _song_title := $BottomContainer/SongTitleLabel
 
 
@@ -20,6 +22,10 @@ func _ready():
 	update_time_playing(0)
 	update_total_time(0)
 	update_paused(true)
+
+
+func get_shuffle() -> bool:
+	return _shuffle_button.pressed
 
 
 func update_time_playing(seconds: float):
@@ -81,3 +87,7 @@ func _on_SongProgress_gui_input(event: InputEvent):
 
 func _on_OpenButton_pressed():
 	emit_signal("open_file_requested")
+
+
+func _on_NextSongButton_pressed():
+	emit_signal("next_song_requested")

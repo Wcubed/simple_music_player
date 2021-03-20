@@ -30,13 +30,16 @@ func get_song_by_index(idx: int) -> Object:
 	return _songs[idx]
 
 
-func get_next_song_to_play() -> Object:
+func get_next_song_to_play(shuffle: bool = false) -> Object:
 	var previous_playing = _currently_playing
 	
-	if _currently_playing < 0 or _currently_playing >= _songs.size() -1:
-		_currently_playing = 0
+	if not shuffle:
+		if _currently_playing < 0 or _currently_playing >= _songs.size() -1:
+			_currently_playing = 0
+		else:
+			_currently_playing += 1
 	else:
-		_currently_playing += 1
+		_currently_playing = randi() % _songs.size()
 	
 	if _songs.empty():
 		return null

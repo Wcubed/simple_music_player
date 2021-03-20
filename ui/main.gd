@@ -29,7 +29,7 @@ func _show_file_popup():
 
 
 func _play_next_song():
-	_play_song(_playlist.get_next_song_to_play())
+	_play_song(_playlist.get_next_song_to_play(_playback_controls.get_shuffle()))
 
 
 func _play_song_by_playlist_index(idx: int):
@@ -137,3 +137,7 @@ func _on_SongLoadDialog_dir_selected(dir: String):
 
 func _on_PlaylistUi_play_song_by_index_requested(idx: int):
 	_play_song_by_playlist_index(idx)
+
+
+func _on_PlaybackControls_next_song_requested():
+	_play_next_song()
