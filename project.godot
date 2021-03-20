@@ -24,6 +24,13 @@ config/icon="res://icon.png"
 
 theme/custom="res://ui/resources/main_theme.theme"
 
+[importer_defaults]
+
+ogg_vorbis={
+"loop": false,
+"loop_offset": 0
+}
+
 [input]
 
 ui_seek_to_time={
