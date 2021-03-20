@@ -33,7 +33,7 @@ func _play_next_song():
 
 
 func _play_song_by_playlist_index(idx: int):
-	_play_song(_playlist.play_song_by_index(idx))
+	_play_song(_playlist.play_song_by_index(idx, _playback_controls.get_shuffle()))
 
 
 func _play_song(song: Object):

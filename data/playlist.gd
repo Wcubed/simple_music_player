@@ -10,12 +10,12 @@ var Song := preload("song.gd")
 
 var _songs := []
 
-# Indexes into the playlist, only shuffled.
-# Once the end is reached, will be re-shuffled.
-# This allows forward and backward stepping while shuffling and
-# also guarantees all songs are played at least once before looping.
-# Get's re-shuffled once new songs are added.
-var _shuffled_idxs := []
+# A list of indexes into the playlist mapping to null values (its a hash set).
+# Pick a random one from this dictionary when a next song is requested.
+# Indexes are removed each time a song is played.
+# Guarantees all songs are played at least once before looping.
+# New songs are simply added to the dictionary.
+var _shuffled_idxs_still_to_play := {}
 
 var _file_checker := File.new()
 
@@ -34,9 +34,13 @@ func get_currently_playing_idx() -> int:
 	return _currently_playing
 
 
-func play_song_by_index(idx: int) -> Object:
+func play_song_by_index(idx: int, remove_from_shuffle: bool = false) -> Object:
 	var previous = _currently_playing
 	_currently_playing = idx
+	
+	if remove_from_shuffle:
+		_shuffled_idxs_still_to_play.erase(idx)
+	
 	emit_signal("currently_playing_updated", _currently_playing, previous)
 	return _songs[idx]
 
@@ -50,18 +54,12 @@ func play_next_song(shuffle: bool = false) -> Object:
 		else:
 			_currently_playing += 1
 	else:
-		if _shuffled_idxs.size() == 0:
+		if _shuffled_idxs_still_to_play.size() == 0:
 			_populate_shuffled_indexes_list()
 		
-		var previous_shuffled_idx = _shuffled_idxs.find(previous_playing)
-		var next_shuffled_idx = previous_shuffled_idx + 1
-		
-		if next_shuffled_idx >= _shuffled_idxs.size():
-			# All the songs have played, re-shuffle.
-			_populate_shuffled_indexes_list()
-			next_shuffled_idx = 0
-		
-		_currently_playing = _shuffled_idxs[next_shuffled_idx]
+		var pick: int = randi() % _shuffled_idxs_still_to_play.size()
+		_currently_playing = _shuffled_idxs_still_to_play.keys()[pick]
+		_shuffled_idxs_still_to_play.erase(_currently_playing)
 	
 	if _songs.empty():
 		return null
@@ -71,11 +69,9 @@ func play_next_song(shuffle: bool = false) -> Object:
 
 
 func _populate_shuffled_indexes_list():
-	_shuffled_idxs.clear()
+	_shuffled_idxs_still_to_play.clear()
 	for i in range(0, _songs.size()):
-		_shuffled_idxs.append(i)
-	
-	_shuffled_idxs.shuffle()
+		_shuffled_idxs_still_to_play[i] = null
 
 
 func add_song(path: String, emit_signal: bool = true):
@@ -98,7 +94,7 @@ func add_song(path: String, emit_signal: bool = true):
 	var song := Song.new(path, path.get_file())
 	
 	_songs.append(song)
-	_populate_shuffled_indexes_list()
+	_shuffled_idxs_still_to_play[_songs.size()-1] = null
 
 
 func add_songs(paths: Array):
