@@ -1,6 +1,9 @@
 extends VBoxContainer
 
 
+signal play_song_by_index_requested(idx)
+
+
 var PlaylistEntry := preload("playlist_entry.tscn")
 
 
@@ -30,6 +33,9 @@ func _on_playlist_songs_updated():
 	for song in songs:
 		var entry := PlaylistEntry.instance()
 		_container.add_child(entry)
+		entry.connect("selected_by_pointer", self, \
+			"_on_entry_pointer_selected_by_pointer", [_container.get_child_count() - 1])
+		
 		entry.show_song(song)
 
 
@@ -37,3 +43,7 @@ func _on_playlist_currently_playing_updated(current: int, previous: int):
 	if previous >= 0:
 		_container.get_child(previous).show_currently_playing(false)
 	_container.get_child(current).show_currently_playing(true)
+
+
+func _on_entry_pointer_selected_by_pointer(idx: int):
+	emit_signal("play_song_by_index_requested", idx)

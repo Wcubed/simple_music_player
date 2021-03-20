@@ -1,8 +1,9 @@
 extends HBoxContainer
 
+signal selected_by_pointer
+
 const PLAYING_COLOR = Color(0.3, 1.0, 0.3)
 const NOT_PLAYING_COLOR = Color(0.9, 0.9, 0.9)
-
 
 onready var _title := $Title
 
@@ -21,3 +22,8 @@ func show_currently_playing(playing: bool):
 		_title.set("custom_colors/font_color", PLAYING_COLOR)
 	else:
 		_title.set("custom_colors/font_color", NOT_PLAYING_COLOR)
+
+
+func _on_PlaylistEntry_gui_input(event: InputEvent):
+	if event.is_action_pressed("ui_pointer_select"):
+		emit_signal("selected_by_pointer")

@@ -26,6 +26,10 @@ func get_currently_playing_idx() -> int:
 	return _currently_playing
 
 
+func get_song_by_index(idx: int) -> Object:
+	return _songs[idx]
+
+
 func get_next_song_to_play() -> Object:
 	var previous_playing = _currently_playing
 	

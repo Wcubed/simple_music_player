@@ -19,6 +19,9 @@ onready var _song_load_dialog := $SongLoadDialog
 func _ready():
 	_song_load_dialog.filters = _playlist.FILE_FILTERS
 	_playlist_ui.set_playlist(_playlist)
+	
+	# For speeding up testing turnaround.
+	_playlist.add_songs_from_directory("D:/simple_music_player_test")
 
 
 func _show_file_popup():
@@ -27,6 +30,10 @@ func _show_file_popup():
 
 func _play_next_song():
 	_play_song(_playlist.get_next_song_to_play())
+
+
+func _play_song_by_playlist_index(idx: int):
+	_play_song(_playlist.get_song_by_index(idx))
 
 
 func _play_song(song: Object):
@@ -126,3 +133,7 @@ func _on_SongLoadDialog_files_selected(paths: Array):
 
 func _on_SongLoadDialog_dir_selected(dir: String):
 	_playlist.add_songs_from_directory(dir)
+
+
+func _on_PlaylistUi_play_song_by_index_requested(idx: int):
+	_play_song_by_playlist_index(idx)
