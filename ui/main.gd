@@ -1,110 +1,65 @@
 extends PanelContainer
 
 
+var _play_progress := 0.0
+
+
 onready var _stream_player := $AudioStreamPlayer
 onready var _update_timer := $UpdateTimer
 
-onready var _total_time_label := find_node("TotalTimeLabel")
-onready var _current_time_label := find_node("CurrentTimeLabel")
-onready var _progress_bar := find_node("ProgressBar")
-onready var _play_pause_button := find_node("PlayPauseButton")
-
-
-var _stream_length_seconds := 0.0
-var _progress_seconds := 0.0
+onready var _playback_controls := $PlaybackControls
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	var audio_stream: AudioStream = load("res://test.ogg")
-	_stream_length_seconds = audio_stream.get_length()
+	_playback_controls.update_total_time(audio_stream.get_length())
 	
 	_stream_player.stream = audio_stream
-	
-	_total_time_label.text = _seconds_to_time_string(_stream_length_seconds)
-	_current_time_label.text = _seconds_to_time_string(0)
-	_progress_bar.max_value = _stream_length_seconds
 
 
 func _play_audio():
 	_update_timer.start()
-	_stream_player.play(_progress_seconds)
+	_stream_player.play(_play_progress)
 	
-	_play_pause_button.text = "||"
+	_playback_controls.update_paused(false)
 
 
 func _pause_audio():
 	_update_timer.stop()
 	_stream_player.stop()
 	
-	_play_pause_button.text = ">"
+	_playback_controls.update_paused(true)
 
 
-func _seconds_to_time_string(seconds: float) -> String:
-	var hours := floor(seconds / 3600)
-	seconds -= hours * 3600
-	var minutes := floor(seconds / 60)
-	seconds -= minutes * 60
-	
-	return "%d:%02d:%02d" % [hours, minutes, seconds]
-
-
-func _seek_to_current_mouse_position():
-	var x: int = _progress_bar.get_local_mouse_position().x
-	var max_x: int = _progress_bar.rect_size.x
-	
-	_progress_seconds = (x * _stream_length_seconds) / max_x
-	_progress_seconds = clamp(_progress_seconds, 0, _stream_length_seconds)
-	
-	_seek_to_timecode(_progress_seconds)
-
-func _seek_to_timecode(seconds: float):
-	seconds = clamp(seconds, 0, _stream_length_seconds)
-	_stream_player.seek(seconds)
-	_update_ui_to_timecode(seconds)
-
-func _update_ui_to_timecode(seconds: float):
-	_current_time_label.text = _seconds_to_time_string(seconds)
-	_progress_bar.value = seconds
+func _seek_timecode(seconds: float):
+	_play_progress = seconds
+	_stream_player.seek(_play_progress)
+	_playback_controls.update_time_playing(_play_progress)
 
 
 func _on_UpdateTimer_timeout():
-	_progress_seconds = _stream_player.get_playback_position()
-	_update_ui_to_timecode(_progress_seconds)
+	_play_progress = _stream_player.get_playback_position()
+	_playback_controls.update_time_playing(_play_progress)
 
 
 func _unhandled_key_input(event):
 	if event.is_action_pressed("ui_right"):
-		_progress_seconds += 10
-		_seek_to_timecode(_progress_seconds)
+		_seek_timecode(_play_progress + 10)
 		get_tree().set_input_as_handled()
 		
 	elif event.is_action_pressed("ui_left"):
-		_progress_seconds -= 10
-		_seek_to_timecode(_progress_seconds)
-		get_tree().set_input_as_handled()
-		
-	elif event.is_action_released("ui_accept"):
-		if _play_pause_button.has_focus():
-			return
-		
-		_play_pause_button.grab_focus()
-		if _stream_player.playing:
-			_pause_audio()
-		else:
-			_play_audio()
+		_seek_timecode(_play_progress - 10)
 		get_tree().set_input_as_handled()
 
 
-func _on_ProgressBar_gui_input(event: InputEvent):
-	if event.is_action_pressed("ui_seek_to_time"):
-		_seek_to_current_mouse_position()
-	elif event is InputEventMouseMotion and Input.is_action_pressed("ui_seek_to_time"):
-		_seek_to_current_mouse_position()
+func _on_PlaybackControls_pause_requested():
+	_pause_audio()
 
 
-func _on_PlayPauseButton_pressed():
-	if _stream_player.playing:
-		_pause_audio()
-	else:
-		_play_audio()
+func _on_PlaybackControls_play_requested():
+	_play_audio()
+
+
+func _on_PlaybackControls_seek_requested(seconds: float):
+	_seek_timecode(seconds)

@@ -1,0 +1,57 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://ui/playback_controls.gd" type="Script" id=1]
+
+[node name="PlaybackControls" type="VBoxContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TopContainer" type="HBoxContainer" parent="."]
+margin_right = 1024.0
+margin_bottom = 22.0
+
+[node name="TimePlayingLabel" type="Label" parent="TopContainer"]
+margin_right = 70.0
+margin_bottom = 22.0
+rect_min_size = Vector2( 70, 0 )
+text = "0:00:00"
+align = 2
+
+[node name="SongProgress" type="ProgressBar" parent="TopContainer"]
+margin_left = 74.0
+margin_right = 955.0
+margin_bottom = 22.0
+size_flags_horizontal = 3
+size_flags_vertical = 1
+step = 0.0
+percent_visible = false
+
+[node name="TotalTimeLabel" type="Label" parent="TopContainer"]
+margin_left = 959.0
+margin_right = 1024.0
+margin_bottom = 22.0
+rect_min_size = Vector2( 65, 0 )
+text = "0:00:00"
+align = 2
+
+[node name="BottomContainer" type="HBoxContainer" parent="."]
+margin_top = 26.0
+margin_right = 1024.0
+margin_bottom = 51.0
+
+[node name="PlayPauseButton" type="Button" parent="BottomContainer"]
+margin_right = 25.0
+margin_bottom = 25.0
+rect_min_size = Vector2( 25, 25 )
+
+[node name="SongTitleLabel" type="Label" parent="BottomContainer"]
+margin_left = 29.0
+margin_top = 1.0
+margin_right = 37.0
+margin_bottom = 23.0
+[connection signal="gui_input" from="TopContainer/SongProgress" to="." method="_on_SongProgress_gui_input"]
+[connection signal="pressed" from="BottomContainer/PlayPauseButton" to="." method="_on_PlayPauseButton_pressed"]

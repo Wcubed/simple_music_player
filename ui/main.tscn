@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://ui/main.gd" type="Script" id=1]
+[ext_resource path="res://ui/playback_controls.tscn" type="PackedScene" id=2]
 
 [node name="Main" type="PanelContainer"]
 anchor_right = 1.0
@@ -15,41 +16,14 @@ __meta__ = {
 [node name="UpdateTimer" type="Timer" parent="."]
 wait_time = 0.2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
-margin_left = 7.0
-margin_top = 7.0
-margin_right = 1017.0
-margin_bottom = 593.0
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
-margin_right = 1010.0
-margin_bottom = 20.0
-
-[node name="PlayPauseButton" type="Button" parent="VBoxContainer/HBoxContainer"]
-margin_right = 20.0
-margin_bottom = 20.0
-text = ">"
-
-[node name="CurrentTimeLabel" type="Label" parent="VBoxContainer/HBoxContainer"]
-margin_left = 24.0
-margin_top = 3.0
-margin_right = 24.0
-margin_bottom = 17.0
-
-[node name="ProgressBar" type="ProgressBar" parent="VBoxContainer/HBoxContainer"]
-margin_left = 28.0
-margin_right = 1006.0
-margin_bottom = 20.0
-size_flags_horizontal = 3
-size_flags_vertical = 1
-step = 0.0
-percent_visible = false
-
-[node name="TotalTimeLabel" type="Label" parent="VBoxContainer/HBoxContainer"]
-margin_left = 1010.0
-margin_top = 3.0
-margin_right = 1010.0
-margin_bottom = 17.0
+[node name="PlaybackControls" parent="." instance=ExtResource( 2 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 5.0
+margin_top = 5.0
+margin_right = 1019.0
+margin_bottom = 595.0
 [connection signal="timeout" from="UpdateTimer" to="." method="_on_UpdateTimer_timeout"]
-[connection signal="pressed" from="VBoxContainer/HBoxContainer/PlayPauseButton" to="." method="_on_PlayPauseButton_pressed"]
-[connection signal="gui_input" from="VBoxContainer/HBoxContainer/ProgressBar" to="." method="_on_ProgressBar_gui_input"]
+[connection signal="pause_requested" from="PlaybackControls" to="." method="_on_PlaybackControls_pause_requested"]
+[connection signal="play_requested" from="PlaybackControls" to="." method="_on_PlaybackControls_play_requested"]
+[connection signal="seek_requested" from="PlaybackControls" to="." method="_on_PlaybackControls_seek_requested"]
