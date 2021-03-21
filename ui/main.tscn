@@ -59,9 +59,9 @@ current_dir = "/WybeData/Library/Music"
 current_path = "/WybeData/Library/Music/"
 [connection signal="finished" from="AudioStreamPlayer" to="." method="_on_AudioStreamPlayer_finished"]
 [connection signal="timeout" from="UpdateTimer" to="." method="_on_UpdateTimer_timeout"]
+[connection signal="add_song_requested" from="VBoxContainer/PlaylistUi" to="." method="_on_PlaylistUi_add_song_requested"]
 [connection signal="play_song_by_index_requested" from="VBoxContainer/PlaylistUi" to="." method="_on_PlaylistUi_play_song_by_index_requested"]
 [connection signal="next_song_requested" from="VBoxContainer/PlaybackControls" to="." method="_on_PlaybackControls_next_song_requested"]
-[connection signal="open_file_requested" from="VBoxContainer/PlaybackControls" to="." method="_on_PlaybackControls_open_file_requested"]
 [connection signal="pause_requested" from="VBoxContainer/PlaybackControls" to="." method="_on_PlaybackControls_pause_requested"]
 [connection signal="play_requested" from="VBoxContainer/PlaybackControls" to="." method="_on_PlaybackControls_play_requested"]
 [connection signal="seek_requested" from="VBoxContainer/PlaybackControls" to="." method="_on_PlaybackControls_seek_requested"]

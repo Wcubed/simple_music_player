@@ -22,3 +22,5 @@ Extra features
 - x Playlist search
 - Show which songs have already been played during shuffle? Or maybe have a separate "library" and "playlist" windows?
   where the playlist window shows the current play queue, which will be shuffled when shuffle is enabled.
+- Listen to media keys when the window is focused.
+- Listen to media keys when the window is _not_ focused. (Can this be done in gdscript?)

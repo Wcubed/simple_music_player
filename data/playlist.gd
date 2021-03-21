@@ -23,7 +23,8 @@ var _currently_playing := -1
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	# Make sure the shuffle is different each time the program is run.
+	randomize()
 
 
 func get_songs() -> Array:

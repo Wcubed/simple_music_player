@@ -109,6 +109,16 @@ func _unhandled_key_input(event):
 	elif event.is_action_pressed("ui_left"):
 		_seek_timecode(_stream_player.get_playback_position() - 10)
 		get_tree().set_input_as_handled()
+	
+	elif event.is_action_pressed("music_next"):
+		_play_next_song()
+		get_tree().set_input_as_handled()
+	
+	elif event.is_action_pressed("music_play_pause"):
+		if _stream_player.stream_paused:
+			_play_audio()
+		else:
+			_pause_audio()
 
 
 func _on_PlaybackControls_pause_requested():
@@ -121,10 +131,6 @@ func _on_PlaybackControls_play_requested():
 
 func _on_PlaybackControls_seek_requested(seconds: float):
 	_seek_timecode(seconds)
-
-
-func _on_PlaybackControls_open_file_requested():
-	_show_file_popup()
 
 
 func _on_AudioStreamPlayer_finished():
@@ -153,3 +159,7 @@ func _on_PlaybackControls_next_song_requested():
 
 func _on_PlaybackControls_volume_change_requested(new_volume: float):
 	_set_volume(new_volume)
+
+
+func _on_PlaylistUi_add_song_requested():
+	_show_file_popup()

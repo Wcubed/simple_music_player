@@ -2,6 +2,7 @@ extends VBoxContainer
 
 
 signal play_song_by_index_requested(idx)
+signal add_song_requested()
 
 
 var PlaylistEntry := preload("playlist_entry.tscn")
@@ -81,3 +82,7 @@ func _on_SearchEdit_gui_input(event: InputEvent):
 	if event.is_action_pressed("ui_cancel"):
 		_clear_search_edit()
 		get_tree().set_input_as_handled()
+
+
+func _on_AddSongButton_pressed():
+	emit_signal("add_song_requested")

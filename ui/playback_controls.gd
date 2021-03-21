@@ -3,7 +3,6 @@ extends VBoxContainer
 signal play_requested()
 signal pause_requested()
 signal seek_requested(seconds)
-signal open_file_requested()
 signal next_song_requested()
 # Volume is in range [0, 1]
 signal volume_change_requested(new_volume)
@@ -90,10 +89,6 @@ func _on_SongProgress_gui_input(event: InputEvent):
 		_seek_to_current_mouse_position()
 	elif event is InputEventMouseMotion and Input.is_action_pressed("ui_seek_to_time"):
 		_seek_to_current_mouse_position()
-
-
-func _on_OpenButton_pressed():
-	emit_signal("open_file_requested")
 
 
 func _on_NextSongButton_pressed():
