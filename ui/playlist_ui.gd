@@ -9,7 +9,8 @@ var PlaylistEntry := preload("playlist_entry.tscn")
 
 var _playlist: Node = null
 
-
+onready var _search_edit := $HBoxContainer/SearchEdit
+onready var _search_clear := $HBoxContainer/ClearButton
 onready var _scroll_container := $ScrollContainer
 onready var _container := $ScrollContainer/PlaylistContainer
 
@@ -51,3 +52,32 @@ func _on_playlist_currently_playing_updated(current: int, previous: int):
 
 func _on_entry_pointer_selected_by_pointer(idx: int):
 	emit_signal("play_song_by_index_requested", idx)
+
+
+func _filter_displayed_songs(match_title: String):
+	for entry in _container.get_children():
+		var show = true
+		if match_title != "":
+			show = entry.get_title().findn(match_title) != -1
+		entry.visible = show
+
+
+func _clear_search_edit():
+	_search_edit.text = ""
+	_search_edit.emit_signal("text_changed", "")
+
+
+func _on_SearchEdit_text_changed(new_text: String):
+	_search_clear.visible = new_text != ""
+	
+	_filter_displayed_songs(new_text)
+
+
+func _on_ClearButton_pressed():
+	_clear_search_edit()
+
+
+func _on_SearchEdit_gui_input(event: InputEvent):
+	if event.is_action_pressed("ui_cancel"):
+		_clear_search_edit()
+		get_tree().set_input_as_handled()

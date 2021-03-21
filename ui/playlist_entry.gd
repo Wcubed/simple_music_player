@@ -13,6 +13,10 @@ func _ready():
 	show_currently_playing(false)
 
 
+func get_title():
+	return _title.text
+
+
 func show_song(song: Object):
 	_title.text = song.title
 
