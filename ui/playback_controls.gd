@@ -22,7 +22,6 @@ onready var _volume_slider := $BottomContainer/VolumeSlider
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	update_time_playing(0)
-	update_total_time(0)
 	update_paused(true)
 
 
