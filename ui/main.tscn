@@ -4,7 +4,7 @@
 [ext_resource path="res://ui/playback_controls.tscn" type="PackedScene" id=2]
 [ext_resource path="res://ui/resources/main_theme.theme" type="Theme" id=3]
 [ext_resource path="res://ui/playlist_ui.tscn" type="PackedScene" id=4]
-[ext_resource path="res://data/playlist.gd" type="Script" id=5]
+[ext_resource path="res://data/playlist.tscn" type="PackedScene" id=5]
 [ext_resource path="res://third_party/GDScriptAudioImport.gd" type="Script" id=6]
 
 [node name="Main" type="PanelContainer"]
@@ -15,11 +15,10 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Playlist" type="Node" parent="."]
-script = ExtResource( 5 )
-
 [node name="AudioImporter" type="Node" parent="."]
 script = ExtResource( 6 )
+
+[node name="Playlist" parent="." instance=ExtResource( 5 )]
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 

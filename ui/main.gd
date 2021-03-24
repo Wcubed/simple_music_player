@@ -1,7 +1,7 @@
 extends PanelContainer
 
 const MAX_VOLUME_DB := 0.0
-const MIN_VOLUME_DB := -30.0
+const MIN_VOLUME_DB := -60.0
 
 var _stream_total_length: float = 0
 var _playback_time: float = 0
@@ -20,7 +20,7 @@ onready var _song_load_dialog := $SongLoadDialog
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	_song_load_dialog.filters = _playlist.FILE_FILTERS
+	_song_load_dialog.filters = _playlist.AUDIO_FILE_FILTERS
 	_playlist_ui.set_playlist(_playlist)
 	
 	_set_volume(0.8)
@@ -138,15 +138,16 @@ func _on_AudioStreamPlayer_finished():
 
 
 func _on_SongLoadDialog_file_selected(path: String):
-	_playlist.add_song(path)
+	_playlist.scan_for_songs(path)
 
 
 func _on_SongLoadDialog_files_selected(paths: Array):
-	_playlist.add_songs(paths)
+	for path in paths:
+		_playlist.scan_for_songs(path)
 
 
 func _on_SongLoadDialog_dir_selected(dir: String):
-	_playlist.add_songs_from_directory(dir)
+	_playlist.scan_for_songs(dir)
 
 
 func _on_PlaylistUi_play_song_by_index_requested(idx: int):
