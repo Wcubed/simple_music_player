@@ -2,12 +2,7 @@ extends Node
 
 signal playlist_songs_updated()
 signal currently_playing_updated(idx, previous_idx)
-
-const AUDIO_FILE_FILTERS := ["*.wav", "*.ogg"]
-const COVER_ART_FILE_EXTENSIONS := ["jpg", "png"]
-
-
-var WorkerTask := preload("background_worker/worker_task.gd")
+signal cover_image_loaded(idx, image)
 
 var _songs := []
 
@@ -79,7 +74,19 @@ func _populate_shuffled_indexes_list():
 
 
 func scan_for_songs(path: String):
-	var task := WorkerTask.new(_background_worker.TASK_SCAN_SONGS, path)
+	var task := {
+			"type": _background_worker.TASK_SCAN_SONGS,
+			"path": path
+		}
+	_background_worker.add_task(task)
+
+
+func scan_for_cover_art(song_path: String, idx: int):
+	var task := {
+			"type": _background_worker.TASK_LOAD_COVER_IMAGE,
+			"path": song_path,
+			"song_idx": idx,
+		}
 	_background_worker.add_task(task)
 
 
@@ -90,42 +97,24 @@ func add_songs(songs: Array):
 		print("Adding: '%s'" % song.title)
 		
 		_songs.append(song)
-		_shuffled_idxs_still_to_play[_songs.size()-1] = null
+		var idx := _songs.size() - 1
+		_shuffled_idxs_still_to_play[idx] = null
+		
+		scan_for_cover_art(song.path, idx)
 	
 	emit_signal("playlist_songs_updated")
-
-
-# Tries to load an image file with the same name as, and in the directory of, the song.
-# Returns `null` if there is no such image.
-func _try_load_detached_cover_art(path: String) -> ImageTexture:
-	# TODO: Return cover art and apply to song.
-	var base_path := path.get_basename()
-	for extension in COVER_ART_FILE_EXTENSIONS:
-		var potential_cover_art: String = base_path + "." + extension
-		if not _file_checker.file_exists(potential_cover_art):
-			continue
-		
-		var cover_art := Image.new()
-		cover_art.load(potential_cover_art)
-		var texture := ImageTexture.new()
-		texture.create_from_image(cover_art)
-		return texture
-		
-	return null
-
-
-func _file_matches_audio_file_filters(path: String) -> bool:
-	var valid := false
-	for filter in AUDIO_FILE_FILTERS:
-		if path.matchn(filter):
-			valid = true
-			break
-	return valid
 
 
 func _on_BackgroundWorker_results_ready():
 	var results: Array = _background_worker.get_results()
 	
 	for result in results:
-		if result.task_type == _background_worker.TASK_SCAN_SONGS:
-			add_songs(result.data)
+		var type: int = result["type"]
+		if type == _background_worker.TASK_SCAN_SONGS:
+			add_songs(result["songs"])
+		elif type == _background_worker.TASK_LOAD_COVER_IMAGE:
+			var idx: int = result["song_idx"]
+			var image: ImageTexture = result["image"]
+			
+			_songs[idx].image = image
+			emit_signal("cover_image_loaded", idx, image)

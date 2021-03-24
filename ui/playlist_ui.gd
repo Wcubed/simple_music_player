@@ -24,10 +24,12 @@ func set_playlist(playlist: Node):
 	if _playlist != null:
 		_playlist.disconnect("playlist_songs_updated", self, "_on_playlist_songs_updated")
 		_playlist.disconnect("currently_playing_updated", self, "_on_playlist_currently_playing_updated")
+		_playlist.disconnect("cover_image_loaded", self, "_on_playlist_cover_image_loaded")
 	
 	_playlist = playlist
 	_playlist.connect("playlist_songs_updated", self, "_on_playlist_songs_updated")
 	_playlist.connect("currently_playing_updated", self, "_on_playlist_currently_playing_updated")
+	_playlist.connect("cover_image_loaded", self, "_on_playlist_cover_image_loaded")
 
 
 func _on_playlist_songs_updated():
@@ -86,3 +88,10 @@ func _on_SearchEdit_gui_input(event: InputEvent):
 
 func _on_AddSongButton_pressed():
 	emit_signal("add_song_requested")
+
+
+func _on_playlist_cover_image_loaded(idx: int, image: ImageTexture):
+	if _container.get_child_count() <= idx:
+		return
+	
+	_container.get_child(idx).update_image(image)

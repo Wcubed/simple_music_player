@@ -20,7 +20,7 @@ onready var _song_load_dialog := $SongLoadDialog
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	_song_load_dialog.filters = _playlist.AUDIO_FILE_FILTERS
+	_song_load_dialog.filters = _playlist._background_worker.AUDIO_FILE_FILTERS
 	_playlist_ui.set_playlist(_playlist)
 	
 	_set_volume(0.8)
@@ -50,6 +50,7 @@ func _play_song(song: Object):
 	_playback_controls.update_song_title(song.title)
 	_playback_controls.update_total_time(_stream_total_length)
 	_playback_controls.update_time_playing(_playback_time)
+	_playback_controls.update_cover_image(song.image)
 	
 	_play_audio()
 

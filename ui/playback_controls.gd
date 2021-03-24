@@ -1,4 +1,4 @@
-extends VBoxContainer
+extends HBoxContainer
 
 signal play_requested()
 signal pause_requested()
@@ -9,14 +9,16 @@ signal volume_change_requested(new_volume)
 
 var _paused := true
 
-onready var _time_playing := $TopContainer/TimePlayingLabel
-onready var _total_time := $TopContainer/TotalTimeLabel
-onready var _song_progress := $TopContainer/SongProgress
+onready var _song_cover_image := $SongCoverImage
 
-onready var _play_pause_button := $BottomContainer/PlayPauseButton
-onready var _shuffle_button := $BottomContainer/ShuffleButton
-onready var _song_title := $BottomContainer/SongTitleLabel
-onready var _volume_slider := $BottomContainer/VolumeSlider
+onready var _time_playing := $VBoxContainer/TopContainer/TimePlayingLabel
+onready var _total_time := $VBoxContainer/TopContainer/TotalTimeLabel
+onready var _song_progress := $VBoxContainer/TopContainer/SongProgress
+
+onready var _play_pause_button := $VBoxContainer/BottomContainer/PlayPauseButton
+onready var _shuffle_button := $VBoxContainer/BottomContainer/ShuffleButton
+onready var _song_title := $VBoxContainer/BottomContainer/SongTitleLabel
+onready var _volume_slider := $VBoxContainer/BottomContainer/VolumeSlider
 
 
 # Called when the node enters the scene tree for the first time.
@@ -47,6 +49,10 @@ func update_paused(paused: bool):
 		_play_pause_button.text = ">"
 	else:
 		_play_pause_button.text = "||"
+
+
+func update_cover_image(image: ImageTexture):
+	_song_cover_image.texture = image
 
 
 func update_song_title(title: String):

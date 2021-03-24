@@ -5,6 +5,7 @@ signal selected_by_pointer()
 const PLAYING_COLOR = Color(0.3, 1.0, 0.3)
 const NOT_PLAYING_COLOR = Color(0.9, 0.9, 0.9)
 
+onready var _cover_image := $CoverImage
 onready var _title := $Title
 
 
@@ -19,6 +20,13 @@ func get_title():
 
 func show_song(song: Object):
 	_title.text = song.title
+	
+	if song.image != null:
+		update_image(song.image)
+
+
+func update_image(image: ImageTexture):
+	_cover_image.texture = image
 
 
 func show_currently_playing(playing: bool):

@@ -12,8 +12,16 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="CoverImage" type="TextureRect" parent="."]
+margin_right = 96.0
+margin_bottom = 600.0
+rect_min_size = Vector2( 96, 54 )
+expand = true
+stretch_mode = 5
+
 [node name="Title" type="Label" parent="."]
+margin_left = 100.0
 margin_top = 289.0
-margin_right = 8.0
+margin_right = 108.0
 margin_bottom = 311.0
 [connection signal="gui_input" from="." to="." method="_on_PlaylistEntry_gui_input"]
