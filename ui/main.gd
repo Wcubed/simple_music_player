@@ -169,3 +169,8 @@ func _on_PlaylistUi_add_song_requested():
 
 func _on_PlaybackControls_previous_song_requested():
 	_play_previous_song()
+
+
+func _on_Library_cover_image_loaded(song_id: int, image: ImageTexture):
+	if song_id == _playlist.get_current_song_id():
+		_playback_controls.update_cover_image(image)

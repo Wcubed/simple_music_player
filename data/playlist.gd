@@ -32,28 +32,14 @@ func _ready():
 	randomize()
 
 
-# Call when the song library acquires new songs. This makes sure the
-# infinite playlist randomizer is up-to-date.
-func _on_songs_added_to_library(new_song_ids: Array):
-	for id in new_song_ids:
-		_library_song_ids[id] = null
-		_songs_left_till_library_repeat[id] = null
-
-# Call when the song library loses songs.
-func _on_songs_removed_from_library(removed_song_ids: Array):
-	for id in removed_song_ids:
-		_library_song_ids.erase(id)
-		_songs_left_till_library_repeat.erase(id)
-		
-		# Erase the song from the playlist itself. 
-		# It might appear multiple times.
-		var find_idx := _playlist.find(id)
-		while find_idx != -1:
-			_playlist.remove(find_idx)
-			find_idx = _playlist.find(id, find_idx)
+# Retursn -1 if there is no current song.
+func get_current_song_id() -> int:
+	if _playlist.empty():
+		return -1
+	return _playlist[_current_song_idx]
 
 
-# Returns the id of the next song to play.
+# Returns the id of the next song to play, and assumes it will be played.
 # `infinite_playlist`: when true a random song will be appended to the list
 # as soon as the last song get's played. When false, the playlist will
 # repeat from the top when hitting the end.
@@ -82,17 +68,8 @@ func get_next_song_id(infinite_playlist: bool) -> int:
 	return _playlist[_current_song_idx]
 
 
-# Is random, except for that it will play the whole library before repeating.
-func _append_random_song():
-	if _songs_left_till_library_repeat.empty():
-		_refill_songs_left_till_library_repeat()
-	
-	var pick_idx: int = randi() % _songs_left_till_library_repeat.size()
-	var id: int = _songs_left_till_library_repeat.keys()[pick_idx]
-	_playlist.append(id)
-
-
-# Returns the id of the previous song in the playlist.
+# Returns the id of the previous song in the playlist, and assumes it will
+# be played.
 # Wraps around if it reaches the top.
 # Returns `-1` if the playlist is empty.
 func get_previous_song_id():
@@ -107,6 +84,36 @@ func get_previous_song_id():
 	_songs_left_till_library_repeat.erase(_current_song_idx)
 	return _playlist[_current_song_idx]
 
+
+# Call when the song library acquires new songs. This makes sure the
+# infinite playlist randomizer is up-to-date.
+func _on_songs_added_to_library(new_song_ids: Array):
+	for id in new_song_ids:
+		_library_song_ids[id] = null
+		_songs_left_till_library_repeat[id] = null
+
+# Call when the song library loses songs.
+func _on_songs_removed_from_library(removed_song_ids: Array):
+	for id in removed_song_ids:
+		_library_song_ids.erase(id)
+		_songs_left_till_library_repeat.erase(id)
+		
+		# Erase the song from the playlist itself. 
+		# It might appear multiple times.
+		var find_idx := _playlist.find(id)
+		while find_idx != -1:
+			_playlist.remove(find_idx)
+			find_idx = _playlist.find(id, find_idx)
+
+
+# Is random, except for that it will play the whole library before repeating.
+func _append_random_song():
+	if _songs_left_till_library_repeat.empty():
+		_refill_songs_left_till_library_repeat()
+	
+	var pick_idx: int = randi() % _songs_left_till_library_repeat.size()
+	var id: int = _songs_left_till_library_repeat.keys()[pick_idx]
+	append_song_to_playlist(id)
 
 func append_song_to_playlist(song_id: int):
 	_playlist.append(song_id)

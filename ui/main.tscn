@@ -60,6 +60,7 @@ mode = 3
 access = 2
 current_dir = "/WybeData/Library/Music"
 current_path = "/WybeData/Library/Music/"
+[connection signal="cover_image_loaded" from="Library" to="." method="_on_Library_cover_image_loaded"]
 [connection signal="songs_added" from="Library" to="Playlist" method="_on_songs_added_to_library"]
 [connection signal="songs_removed" from="Library" to="Playlist" method="_on_songs_removed_from_library"]
 [connection signal="finished" from="AudioStreamPlayer" to="." method="_on_AudioStreamPlayer_finished"]
