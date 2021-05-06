@@ -19,6 +19,7 @@ config/name="Simple Music Player"
 run/main_scene="res://ui/main.tscn"
 run/low_processor_mode=true
 config/icon="res://icon.png"
+config/windows_native_icon="res://icon.ico"
 
 [gui]
 

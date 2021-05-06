@@ -22,7 +22,7 @@ onready var _song_load_dialog := $SongLoadDialog
 func _ready():
 	_song_load_dialog.filters = _playlist._background_worker.AUDIO_FILE_FILTERS
 	_playlist_ui.set_playlist(_playlist)
-	
+
 	_set_volume(0.8)
 
 
@@ -41,17 +41,17 @@ func _play_song_by_playlist_index(idx: int):
 func _play_song(song: Object):
 	if song == null:
 		return
-	
+
 	var audio_stream: AudioStream = _audio_importer.loadfile(song.path)
 	_stream_player.stream = audio_stream
 	_stream_total_length = audio_stream.get_length()
 	_playback_time = 0
-	
+
 	_playback_controls.update_song_title(song.title)
 	_playback_controls.update_total_time(_stream_total_length)
 	_playback_controls.update_time_playing(_playback_time)
 	_playback_controls.update_cover_image(song.image)
-	
+
 	_play_audio()
 
 
@@ -59,21 +59,21 @@ func _play_audio():
 	if _stream_player.stream == null:
 		call_deferred("_play_next_song")
 		return
-	
+
 	_update_timer.start()
 	_stream_player.play(_playback_time)
 	_stream_player.stream_paused = false
-	
+
 	_playback_controls.update_paused(false)
 
 
 func _pause_audio():
 	if _stream_player.stream == null:
 		return
-	
+
 	_update_timer.stop()
 	_stream_player.stream_paused = true
-	
+
 	_playback_controls.update_paused(true)
 
 
@@ -85,9 +85,9 @@ func _seek_timecode(seconds: float):
 	if _stream_player.stream == null:
 		return
 	_playback_time = seconds
-	
+
 	_stream_player.seek(_playback_time)
-	
+
 	_playback_controls.update_time_playing(_playback_time)
 
 
@@ -106,15 +106,15 @@ func _unhandled_key_input(event):
 	if event.is_action_pressed("ui_right"):
 		_seek_timecode(_stream_player.get_playback_position() + 10)
 		get_tree().set_input_as_handled()
-		
+
 	elif event.is_action_pressed("ui_left"):
 		_seek_timecode(_stream_player.get_playback_position() - 10)
 		get_tree().set_input_as_handled()
-	
+
 	elif event.is_action_pressed("music_next"):
 		_play_next_song()
 		get_tree().set_input_as_handled()
-	
+
 	elif event.is_action_pressed("music_play_pause"):
 		if _stream_player.stream_paused:
 			_play_audio()

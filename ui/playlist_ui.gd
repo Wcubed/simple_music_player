@@ -25,7 +25,7 @@ func set_playlist(playlist: Node):
 		_playlist.disconnect("playlist_songs_updated", self, "_on_playlist_songs_updated")
 		_playlist.disconnect("currently_playing_updated", self, "_on_playlist_currently_playing_updated")
 		_playlist.disconnect("cover_image_loaded", self, "_on_playlist_cover_image_loaded")
-	
+
 	_playlist = playlist
 	_playlist.connect("playlist_songs_updated", self, "_on_playlist_songs_updated")
 	_playlist.connect("currently_playing_updated", self, "_on_playlist_currently_playing_updated")
@@ -40,17 +40,17 @@ func _on_playlist_songs_updated():
 		_container.add_child(entry)
 		entry.connect("selected_by_pointer", self, \
 			"_on_entry_pointer_selected_by_pointer", [_container.get_child_count() - 1])
-		
+
 		entry.show_song(song)
 
 
 func _on_playlist_currently_playing_updated(current: int, previous: int):
 	if previous >= 0:
 		_container.get_child(previous).show_currently_playing(false)
-	
+
 	var current_playing := _container.get_child(current)
 	current_playing.show_currently_playing(true)
-	
+
 
 
 func _on_entry_pointer_selected_by_pointer(idx: int):
@@ -72,7 +72,7 @@ func _clear_search_edit():
 
 func _on_SearchEdit_text_changed(new_text: String):
 	_search_clear.visible = new_text != ""
-	
+
 	_filter_displayed_songs(new_text)
 
 
@@ -93,5 +93,5 @@ func _on_AddSongButton_pressed():
 func _on_playlist_cover_image_loaded(idx: int, image: ImageTexture):
 	if _container.get_child_count() <= idx:
 		return
-	
+
 	_container.get_child(idx).update_image(image)

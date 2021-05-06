@@ -17,6 +17,10 @@ Extra features
 - Add and remove song library directories.
 	- Keep libraries between restarts.
 - Cache which songs are in a library.
+- Cache thumbnails of cover images?
+  - Use imagemagick to automatically convert encountered cover images into thumbnails of a format that godot can read.
+    that way it doesn't matter what the format of the original image is.
+- Change underscores into spaces in song titles, and snip the extension.
 - x Shuffle, but only play each song exactly once before repeating.
 - When adding songs, make sure we don't add the same song twice.
 - x Playlist search

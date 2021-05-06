@@ -20,7 +20,7 @@ func get_title():
 
 func show_song(song: Object):
 	_title.text = song.title
-	
+
 	if song.image != null:
 		update_image(song.image)
 

@@ -8,6 +8,7 @@ signal results_ready()
 #   path: directory or file to scan.
 # result:
 #   songs: Array of found `Songs`
+#
 # type: TASK_LOAD_COVER_IMAGE - load a cover image for a song, if it exists.
 # task:
 #   path: path to the song to load thee cover image for.
@@ -15,7 +16,7 @@ signal results_ready()
 # result:
 #   image: cover image
 #   song_idx: index of the song in the library.
-# 
+#
 enum {TASK_SCAN_SONGS, TASK_LOAD_COVER_IMAGE}
 
 const AUDIO_FILE_FILTERS := ["*.wav", "*.ogg"]
@@ -51,9 +52,9 @@ func _exit_tree():
 	_mutex.lock()
 	_exit_thread = true
 	_mutex.unlock()
-	
+
 	_work_semaphore.post()
-	
+
 	_thread.wait_to_finish()
 
 
@@ -61,7 +62,7 @@ func add_task(task: Dictionary):
 	_mutex.lock()
 	_work_queue.append(task)
 	_mutex.unlock()
-	
+
 	_work_semaphore.post()
 
 
@@ -76,11 +77,11 @@ func get_results() -> Array:
 func _thread_background_worker(userdata):
 	while true:
 		_work_semaphore.wait()
-		
+
 		_mutex.lock()
 		var exit := _exit_thread
 		_mutex.unlock()
-		
+
 		if exit:
 			break
 		elif not _work_queue.empty():
@@ -91,11 +92,11 @@ func _thread_do_work():
 	_mutex.lock()
 	var task: Dictionary = _work_queue.pop_front()
 	_mutex.unlock()
-	
+
 	_current_result_data = []
-	
+
 	var task_type: int = task["type"]
-	
+
 	if task_type == TASK_SCAN_SONGS:
 		var path: String = task["path"]
 		if _file_checker.file_exists(path):
@@ -103,7 +104,7 @@ func _thread_do_work():
 				_thread_scan_song(path)
 		else:
 			_thread_scan_songs_recursive(path)
-		
+
 		var result := {
 			"type": TASK_SCAN_SONGS,
 			"songs": _current_result_data
@@ -111,42 +112,46 @@ func _thread_do_work():
 		_mutex.lock()
 		_results.append(result)
 		_mutex.unlock()
-		
+
 		emit_signal("results_ready")
 	elif task_type == TASK_LOAD_COVER_IMAGE:
 		var path: String = task["path"]
 		var image := _thread_try_load_detached_cover_art(path)
-		
+
 		if image != null:
 			var result := {
 				"type": TASK_LOAD_COVER_IMAGE,
 				"image": image,
 				"song_idx": task["song_idx"],
 			}
-			
+
 			_mutex.lock()
 			_results.append(result)
 			_mutex.unlock()
-			
+
 			emit_signal("results_ready")
 
 
 func _thread_scan_song(path: String):
 	path = ProjectSettings.globalize_path(path)
-	var song := Song.new(path, path.get_file())
+
+	# Title is the filename without extension, and spaces instead of underscores.
+	var title := path.get_basename().get_file().replace("_", " ")
+
+	var song := Song.new(path, title)
 	_current_result_data.append(song)
 
 
 func _thread_scan_songs_recursive(path: String):
 	var dir := Directory.new()
 	dir.open(path)
-	
+
 	dir.list_dir_begin(true)
 	var result := {}
 	while true:
 		var file: String = dir.get_next()
 		var full_path: String = path + "/" + file
-		
+
 		if file == "":
 			break
 		if dir.current_is_dir():
@@ -154,7 +159,7 @@ func _thread_scan_songs_recursive(path: String):
 			_thread_scan_songs_recursive(full_path)
 		elif _thread_file_matches_audio_file_filters(full_path):
 			_thread_scan_song(full_path)
-	
+
 	dir.list_dir_end()
 
 
@@ -175,12 +180,12 @@ func _thread_try_load_detached_cover_art(path: String) -> ImageTexture:
 		var potential_cover_art: String = base_path + "." + extension
 		if not _file_checker.file_exists(potential_cover_art):
 			continue
-		
+
 		var cover_art := Image.new()
 		cover_art.load(potential_cover_art)
-		
+
 		var texture := ImageTexture.new()
 		texture.create_from_image(cover_art)
 		return texture
-		
+
 	return null

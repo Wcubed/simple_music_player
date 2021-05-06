@@ -68,17 +68,17 @@ func _seconds_to_time_string(seconds: float) -> String:
 	seconds -= hours * 3600
 	var minutes := floor(seconds / 60)
 	seconds -= minutes * 60
-	
+
 	return "%d:%02d:%02d" % [hours, minutes, seconds]
 
 
 func _seek_to_current_mouse_position():
 	var x: int = _song_progress.get_local_mouse_position().x
 	var max_x: int = _song_progress.rect_size.x
-	
+
 	var seek: float = (x * _song_progress.max_value) / max_x
 	seek = clamp(seek, 0, _song_progress.max_value)
-	
+
 	emit_signal("seek_requested", seek)
 
 
