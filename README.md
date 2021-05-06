@@ -14,9 +14,11 @@ Extra features
 - Previous song button? How would that work with shuffle?
 - x Volume slider
 - Load an image in the same directory as cover art
+- Add a library view.
 - Add and remove song library directories.
 	- Keep libraries between restarts.
-- Cache which songs are in a library.
+- Order library alphabetically.
+- Cache which songs are in a library?
 - Cache thumbnails of cover images?
   - Use imagemagick to automatically convert encountered cover images into thumbnails of a format that godot can read.
     that way it doesn't matter what the format of the original image is.
@@ -28,3 +30,5 @@ Extra features
   where the playlist window shows the current play queue, which will be shuffled when shuffle is enabled.
 - Listen to media keys when the window is focused.
 - Listen to media keys when the window is _not_ focused. (Can this be done in gdscript?)
+- Allow reordering songs in the playlist
+- Allow removing songs from the playlist.

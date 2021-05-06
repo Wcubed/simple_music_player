@@ -6,6 +6,7 @@ const MIN_VOLUME_DB := -60.0
 var _stream_total_length: float = 0
 var _playback_time: float = 0
 
+onready var _library := $Library
 onready var _playlist := $Playlist
 onready var _audio_importer := $AudioImporter
 
@@ -20,9 +21,9 @@ onready var _song_load_dialog := $SongLoadDialog
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	_song_load_dialog.filters = _playlist._background_worker.AUDIO_FILE_FILTERS
+	_song_load_dialog.filters = _library._background_worker.AUDIO_FILE_FILTERS
 	_playlist_ui.set_playlist(_playlist)
-
+	
 	_set_volume(0.8)
 
 
@@ -31,11 +32,14 @@ func _show_file_popup():
 
 
 func _play_next_song():
-	_play_song(_playlist.play_next_song(_playback_controls.get_shuffle()))
+	var infinite: bool = _playback_controls.is_infinite_playlist_enabled()
+	var song: Object = _library.get_song_by_id(_playlist.get_next_song_id(infinite))
+	_play_song(song)
 
 
-func _play_song_by_playlist_index(idx: int):
-	_play_song(_playlist.play_song_by_index(idx, _playback_controls.get_shuffle()))
+func _play_previous_song():
+	var song: Object = _library.get_song_by_id(_playlist.get_previous_song_id())
+	_play_song(song)
 
 
 func _play_song(song: Object):
@@ -139,20 +143,16 @@ func _on_AudioStreamPlayer_finished():
 
 
 func _on_SongLoadDialog_file_selected(path: String):
-	_playlist.scan_for_songs(path)
+	_library.queue_scan_for_songs(path)
 
 
 func _on_SongLoadDialog_files_selected(paths: Array):
 	for path in paths:
-		_playlist.scan_for_songs(path)
+		_library.queue_scan_for_songs(path)
 
 
 func _on_SongLoadDialog_dir_selected(dir: String):
-	_playlist.scan_for_songs(dir)
-
-
-func _on_PlaylistUi_play_song_by_index_requested(idx: int):
-	_play_song_by_playlist_index(idx)
+	_library.queue_scan_for_songs(dir)
 
 
 func _on_PlaybackControls_next_song_requested():
@@ -165,3 +165,7 @@ func _on_PlaybackControls_volume_change_requested(new_volume: float):
 
 func _on_PlaylistUi_add_song_requested():
 	_show_file_popup()
+
+
+func _on_PlaybackControls_previous_song_requested():
+	_play_previous_song()

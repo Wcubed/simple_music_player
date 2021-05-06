@@ -12,10 +12,10 @@ signal results_ready()
 # type: TASK_LOAD_COVER_IMAGE - load a cover image for a song, if it exists.
 # task:
 #   path: path to the song to load thee cover image for.
-#   song_idx: index of the song in the library, for returning in the result
+#   song_id: id of the song in the library, for returning in the result
 # result:
 #   image: cover image
-#   song_idx: index of the song in the library.
+#   song_id: id of the song in the library.
 #
 enum {TASK_SCAN_SONGS, TASK_LOAD_COVER_IMAGE}
 
@@ -122,7 +122,7 @@ func _thread_do_work():
 			var result := {
 				"type": TASK_LOAD_COVER_IMAGE,
 				"image": image,
-				"song_idx": task["song_idx"],
+				"song_id": task["song_id"],
 			}
 
 			_mutex.lock()

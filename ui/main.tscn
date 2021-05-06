@@ -1,11 +1,12 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://ui/main.gd" type="Script" id=1]
 [ext_resource path="res://ui/playback_controls.tscn" type="PackedScene" id=2]
 [ext_resource path="res://ui/resources/main_theme.theme" type="Theme" id=3]
 [ext_resource path="res://ui/playlist_ui.tscn" type="PackedScene" id=4]
-[ext_resource path="res://data/playlist.tscn" type="PackedScene" id=5]
+[ext_resource path="res://data/library.tscn" type="PackedScene" id=5]
 [ext_resource path="res://third_party/GDScriptAudioImport.gd" type="Script" id=6]
+[ext_resource path="res://data/playlist.gd" type="Script" id=7]
 
 [node name="Main" type="PanelContainer"]
 anchor_right = 1.0
@@ -18,7 +19,10 @@ __meta__ = {
 [node name="AudioImporter" type="Node" parent="."]
 script = ExtResource( 6 )
 
-[node name="Playlist" parent="." instance=ExtResource( 5 )]
+[node name="Library" parent="." instance=ExtResource( 5 )]
+
+[node name="Playlist" type="Node" parent="."]
+script = ExtResource( 7 )
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 
@@ -56,6 +60,8 @@ mode = 3
 access = 2
 current_dir = "/WybeData/Library/Music"
 current_path = "/WybeData/Library/Music/"
+[connection signal="songs_added" from="Library" to="Playlist" method="_on_songs_added_to_library"]
+[connection signal="songs_removed" from="Library" to="Playlist" method="_on_songs_removed_from_library"]
 [connection signal="finished" from="AudioStreamPlayer" to="." method="_on_AudioStreamPlayer_finished"]
 [connection signal="timeout" from="UpdateTimer" to="." method="_on_UpdateTimer_timeout"]
 [connection signal="add_song_requested" from="VBoxContainer/PlaylistUi" to="." method="_on_PlaylistUi_add_song_requested"]
@@ -63,6 +69,7 @@ current_path = "/WybeData/Library/Music/"
 [connection signal="next_song_requested" from="VBoxContainer/PlaybackControls" to="." method="_on_PlaybackControls_next_song_requested"]
 [connection signal="pause_requested" from="VBoxContainer/PlaybackControls" to="." method="_on_PlaybackControls_pause_requested"]
 [connection signal="play_requested" from="VBoxContainer/PlaybackControls" to="." method="_on_PlaybackControls_play_requested"]
+[connection signal="previous_song_requested" from="VBoxContainer/PlaybackControls" to="." method="_on_PlaybackControls_previous_song_requested"]
 [connection signal="seek_requested" from="VBoxContainer/PlaybackControls" to="." method="_on_PlaybackControls_seek_requested"]
 [connection signal="volume_change_requested" from="VBoxContainer/PlaybackControls" to="." method="_on_PlaybackControls_volume_change_requested"]
 [connection signal="dir_selected" from="SongLoadDialog" to="." method="_on_SongLoadDialog_dir_selected"]

@@ -4,6 +4,7 @@ signal play_requested()
 signal pause_requested()
 signal seek_requested(seconds)
 signal next_song_requested()
+signal previous_song_requested()
 # Volume is in range [0, 1]
 signal volume_change_requested(new_volume)
 
@@ -16,7 +17,7 @@ onready var _total_time := $VBoxContainer/TopContainer/TotalTimeLabel
 onready var _song_progress := $VBoxContainer/TopContainer/SongProgress
 
 onready var _play_pause_button := $VBoxContainer/BottomContainer/PlayPauseButton
-onready var _shuffle_button := $VBoxContainer/BottomContainer/ShuffleButton
+onready var _infinite_playlist_button := $VBoxContainer/BottomContainer/InfinitePlaylistButton
 onready var _song_title := $VBoxContainer/BottomContainer/SongTitleLabel
 onready var _volume_slider := $VBoxContainer/BottomContainer/VolumeSlider
 
@@ -27,8 +28,8 @@ func _ready():
 	update_paused(true)
 
 
-func get_shuffle() -> bool:
-	return _shuffle_button.pressed
+func is_infinite_playlist_enabled() -> bool:
+	return _infinite_playlist_button.pressed
 
 
 func update_time_playing(seconds: float):
@@ -98,6 +99,10 @@ func _on_SongProgress_gui_input(event: InputEvent):
 
 func _on_NextSongButton_pressed():
 	emit_signal("next_song_requested")
+
+
+func _on_PreviousSongButton_pressed():
+	emit_signal("previous_song_requested")
 
 
 func _on_VolumeSlider_value_changed(value: float):

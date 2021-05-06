@@ -1,120 +1,116 @@
 extends Node
 
-signal playlist_songs_updated()
-signal currently_playing_updated(idx, previous_idx)
-signal cover_image_loaded(idx, image)
+# The playlist keeps track of which songs to play from the library
+# and in what order.
+# TODO: The playlist can be "infinite" in which case it will append a
+# new random song to the playlist every time it hits the last song.
+# While ensuring to play every song at least once before repeating.
 
-var _songs := []
+# Keeps the song ids of the playlist, in the order that they will be played / 
+# have been played.
+var _playlist := []
 
-# A list of indexes into the playlist mapping to null values (its a hash set).
-# Pick a random one from this dictionary when a next song is requested.
-# Indexes are removed each time a song is played.
-# Guarantees all songs are played at least once before looping.
-# New songs are simply added to the dictionary.
-var _shuffled_idxs_still_to_play := {}
+# Which of the songs in the `playlist` array is currently playing.
+# If this is an invalid index, the playlist will simply start at the beginning.
+var _current_song_idx: int = -1
 
-var _file_checker := File.new()
+# All the song id's available in the library.
+# This is what the `songs_left_till_library_repeat` is filled with when it is
+# empty.
+var _library_song_ids := {}
+# Has id's of all the songs in the library (with 'null' values. it's a hash-set)
+# When a random song is needed it is selected from here.
+# When a song is played, it is removed from the set.
+# This guarantees that all songs will be played at least once before the library
+# repeats.
+# Re-fills from the `library_song_ids` when empty.
+var _songs_left_till_library_repeat := {}
 
-var _currently_playing := -1
-
-onready var _background_worker := $BackgroundWorker
-
-# Called when the node enters the scene tree for the first time.
 func _ready():
-	# Make sure the shuffle is different each time the program is run.
+	# Initialize the pseudorandom seed to make sure shuffling is different
+	# each time.
 	randomize()
 
 
-func get_songs() -> Array:
-	return _songs
+# Call when the song library acquires new songs. This makes sure the
+# infinite playlist randomizer is up-to-date.
+func _on_songs_added_to_library(new_song_ids: Array):
+	for id in new_song_ids:
+		_library_song_ids[id] = null
+		_songs_left_till_library_repeat[id] = null
+
+# Call when the song library loses songs.
+func _on_songs_removed_from_library(removed_song_ids: Array):
+	for id in removed_song_ids:
+		_library_song_ids.erase(id)
+		_songs_left_till_library_repeat.erase(id)
+		
+		# Erase the song from the playlist itself. 
+		# It might appear multiple times.
+		var find_idx := _playlist.find(id)
+		while find_idx != -1:
+			_playlist.remove(find_idx)
+			find_idx = _playlist.find(id, find_idx)
 
 
-func get_currently_playing_idx() -> int:
-	return _currently_playing
-
-
-func play_song_by_index(idx: int, remove_from_shuffle: bool = false) -> Object:
-	var previous = _currently_playing
-	_currently_playing = idx
-
-	if remove_from_shuffle:
-		_shuffled_idxs_still_to_play.erase(idx)
-
-	emit_signal("currently_playing_updated", _currently_playing, previous)
-	return _songs[idx]
-
-
-func play_next_song(shuffle: bool = false) -> Object:
-	var previous_playing = _currently_playing
-
-	if not shuffle:
-		if _currently_playing < 0 or _currently_playing >= _songs.size() -1:
-			_currently_playing = 0
+# Returns the id of the next song to play.
+# `infinite_playlist`: when true a random song will be appended to the list
+# as soon as the last song get's played. When false, the playlist will
+# repeat from the top when hitting the end.
+# Returns `-1` if the playlist is empty and not requested to be infinite.
+func get_next_song_id(infinite_playlist: bool) -> int:
+	if _library_song_ids.empty():
+		# If the library is empty, there is nothing to play.
+		return -1
+	if _playlist.empty() && !infinite_playlist:
+		return -1
+	
+	_current_song_idx += 1
+	
+	
+	if _current_song_idx >= _playlist.size() - 1:
+		if infinite_playlist:
+			# The infinite playlist keeps growing before it reaches the end.
+			# It is always at least 1 song ahead of the current song.
+			while _playlist.size() < _current_song_idx + 1:
+				_append_random_song()
 		else:
-			_currently_playing += 1
-	else:
-		if _shuffled_idxs_still_to_play.size() == 0:
-			_populate_shuffled_indexes_list()
-
-		var pick: int = randi() % _shuffled_idxs_still_to_play.size()
-		_currently_playing = _shuffled_idxs_still_to_play.keys()[pick]
-		_shuffled_idxs_still_to_play.erase(_currently_playing)
-
-	if _songs.empty():
-		return null
-
-	emit_signal("currently_playing_updated", _currently_playing, previous_playing)
-	return _songs[_currently_playing]
+			# Non-infinite playlist starts again from the top.
+			_current_song_idx = 0
+	
+	_songs_left_till_library_repeat.erase(_current_song_idx)
+	return _playlist[_current_song_idx]
 
 
-func _populate_shuffled_indexes_list():
-	_shuffled_idxs_still_to_play.clear()
-	for i in range(0, _songs.size()):
-		_shuffled_idxs_still_to_play[i] = null
+# Is random, except for that it will play the whole library before repeating.
+func _append_random_song():
+	if _songs_left_till_library_repeat.empty():
+		_refill_songs_left_till_library_repeat()
+	
+	var pick_idx: int = randi() % _songs_left_till_library_repeat.size()
+	var id: int = _songs_left_till_library_repeat.keys()[pick_idx]
+	_playlist.append(id)
 
 
-func scan_for_songs(path: String):
-	var task := {
-			"type": _background_worker.TASK_SCAN_SONGS,
-			"path": path
-		}
-	_background_worker.add_task(task)
+# Returns the id of the previous song in the playlist.
+# Wraps around if it reaches the top.
+# Returns `-1` if the playlist is empty.
+func get_previous_song_id():
+	if _playlist.empty():
+		return -1
+	
+	_current_song_idx -= 1
+	
+	if _current_song_idx <= 0:
+		_current_song_idx = _playlist.size() - 1
+	
+	_songs_left_till_library_repeat.erase(_current_song_idx)
+	return _playlist[_current_song_idx]
 
 
-func scan_for_cover_art(song_path: String, idx: int):
-	var task := {
-			"type": _background_worker.TASK_LOAD_COVER_IMAGE,
-			"path": song_path,
-			"song_idx": idx,
-		}
-	_background_worker.add_task(task)
+func append_song_to_playlist(song_id: int):
+	_playlist.append(song_id)
 
 
-func add_songs(songs: Array):
-	# TODO: reliably Check for duplicates.
-
-	for song in songs:
-		print("Adding: '%s'" % song.title)
-
-		_songs.append(song)
-		var idx := _songs.size() - 1
-		_shuffled_idxs_still_to_play[idx] = null
-
-		scan_for_cover_art(song.path, idx)
-
-	emit_signal("playlist_songs_updated")
-
-
-func _on_BackgroundWorker_results_ready():
-	var results: Array = _background_worker.get_results()
-
-	for result in results:
-		var type: int = result["type"]
-		if type == _background_worker.TASK_SCAN_SONGS:
-			add_songs(result["songs"])
-		elif type == _background_worker.TASK_LOAD_COVER_IMAGE:
-			var idx: int = result["song_idx"]
-			var image: ImageTexture = result["image"]
-
-			_songs[idx].image = image
-			emit_signal("cover_image_loaded", idx, image)
+func _refill_songs_left_till_library_repeat():
+	_songs_left_till_library_repeat = _library_song_ids.duplicate()
