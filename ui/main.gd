@@ -42,6 +42,11 @@ func _play_previous_song():
 	_play_song(song)
 
 
+func _play_song_by_idx(idx: int):
+	var song: Object = _library.get_song_by_id(_playlist.select_song_by_index(idx))
+	_play_song(song)
+
+
 func _play_song(song: Object):
 	if song == null:
 		return
@@ -177,9 +182,16 @@ func _on_Library_cover_image_loaded(song_id: int, image: ImageTexture):
 
 
 func _on_PlaylistUi_play_song_by_index_requested(idx: int):
-	var song: Object = _library.get_song_by_id(_playlist.select_song_by_index(idx))
-	_play_song(song)
+	_play_song_by_idx(idx)
 
 
 func _on_PlaybackControls_infinite_playlist_button_toggled(new_state: bool):
 	_playlist.set_infinite(new_state)
+
+
+func _on_PlaylistUi_remove_song_by_index_requested(idx: int):
+	_playlist.remove_song_at_index(idx)
+	
+	if _playlist.get_current_song_idx() == idx:
+		# If the currently playing song was deleted, 
+		_play_song_by_idx(idx)

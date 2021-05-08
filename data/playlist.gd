@@ -2,6 +2,7 @@ extends Node
 
 # The playlist_idx is where in the playlist this song was added.
 signal song_added(song_id, playlist_idx)
+signal song_removed(playlist_idx)
 signal currently_playing_updated(song_idx)
 
 # The playlist keeps track of which songs to play from the library
@@ -51,6 +52,11 @@ func get_current_song_id() -> int:
 	if _playlist.empty():
 		return -1
 	return _playlist[_current_song_idx]
+
+
+# Returns the index of the currently playing song.
+func get_current_song_idx() -> int:
+	return _current_song_idx
 
 
 # Returns the id of the next song to play, and assumes it will be played.
@@ -128,6 +134,10 @@ func append_song_to_playlist(song_id: int):
 	_playlist.append(song_id)
 	emit_signal("song_added", song_id, _playlist.size() - 1)
 
+
+func remove_song_at_index(song_index: int):
+	_playlist.remove(song_index)
+	emit_signal("song_removed", song_index)
 
 func _refill_songs_left_till_library_repeat():
 	_songs_left_till_library_repeat = _library_song_ids.duplicate()

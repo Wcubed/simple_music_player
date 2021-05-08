@@ -1,6 +1,7 @@
 extends HBoxContainer
 
 signal selected_by_pointer()
+signal remove_button_pressed()
 
 const PLAYING_COLOR = Color(0.3, 1.0, 0.3)
 const NOT_PLAYING_COLOR = Color(0.9, 0.9, 0.9)
@@ -46,3 +47,7 @@ func _on_PlaylistEntry_gui_input(event: InputEvent):
 func _on_library_cover_image_loaded(song_id: int, image: ImageTexture):
 	if song_id == _song_id:
 		update_image(image)
+
+
+func _on_RemoveButton_pressed():
+	emit_signal("remove_button_pressed")
