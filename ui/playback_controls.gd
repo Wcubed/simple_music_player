@@ -7,6 +7,7 @@ signal next_song_requested()
 signal previous_song_requested()
 # Volume is in range [0, 1]
 signal volume_change_requested(new_volume)
+signal infinite_playlist_button_toggled(new_state)
 
 var _paused := true
 
@@ -107,3 +108,7 @@ func _on_PreviousSongButton_pressed():
 
 func _on_VolumeSlider_value_changed(value: float):
 	emit_signal("volume_change_requested", value)
+
+
+func _on_InfinitePlaylistButton_toggled(button_pressed: bool):
+	emit_signal("infinite_playlist_button_toggled", button_pressed)

@@ -23,6 +23,7 @@ onready var _song_load_dialog := $SongLoadDialog
 func _ready():
 	_song_load_dialog.filters = _library._background_worker.AUDIO_FILE_FILTERS
 	_playlist_ui.set_library(_library)
+	_playlist.set_infinite(_playback_controls.is_infinite_playlist_enabled())
 	
 	_set_volume(0.8)
 
@@ -32,8 +33,7 @@ func _show_file_popup():
 
 
 func _play_next_song():
-	var infinite: bool = _playback_controls.is_infinite_playlist_enabled()
-	var song: Object = _library.get_song_by_id(_playlist.select_next_song(infinite))
+	var song: Object = _library.get_song_by_id(_playlist.select_next_song())
 	_play_song(song)
 
 
@@ -179,3 +179,7 @@ func _on_Library_cover_image_loaded(song_id: int, image: ImageTexture):
 func _on_PlaylistUi_play_song_by_index_requested(idx: int):
 	var song: Object = _library.get_song_by_id(_playlist.select_song_by_index(idx))
 	_play_song(song)
+
+
+func _on_PlaybackControls_infinite_playlist_button_toggled(new_state: bool):
+	_playlist.set_infinite(new_state)

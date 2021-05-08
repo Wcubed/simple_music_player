@@ -6,9 +6,15 @@ signal currently_playing_updated(song_idx)
 
 # The playlist keeps track of which songs to play from the library
 # and in what order.
-# TODO: The playlist can be "infinite" in which case it will append a
+
+# How many songs there will be at minimum between the current song and the
+# end of an infinite playlist.
+const INFINITE_PLAYLIST_SONG_BUFFER := 2
+
+# The playlist can be "infinite" in which case it will append a
 # new random song to the playlist every time it hits the last song.
 # While ensuring to play every song at least once before repeating.
+var _infinite_playlist := false
 
 # Keeps the song ids of the playlist, in the order that they will be played / 
 # have been played.
@@ -36,7 +42,11 @@ func _ready():
 	randomize()
 
 
-# Retursn -1 if there is no current song.
+func set_infinite(infinite: bool):
+	_infinite_playlist = infinite
+
+
+# Returns -1 if there is no current song.
 func get_current_song_id() -> int:
 	if _playlist.empty():
 		return -1
@@ -44,50 +54,39 @@ func get_current_song_id() -> int:
 
 
 # Returns the id of the next song to play, and assumes it will be played.
-# `infinite_playlist`: when true a random song will be appended to the list
-# as soon as the last song get's played. When false, the playlist will
-# repeat from the top when hitting the end.
 # Returns `-1` if the playlist is empty and not requested to be infinite.
-func select_next_song(infinite_playlist: bool) -> int:
-	if _library_song_ids.empty():
-		# If the library is empty, there is nothing to play.
-		return -1
-	if _playlist.empty() && !infinite_playlist:
-		return -1
-	
-	_current_song_idx += 1
-	
-	if _current_song_idx >= _playlist.size() - 1:
-		if infinite_playlist:
-			# The infinite playlist keeps growing before it reaches the end.
-			# It is always at least 1 song ahead of the current song.
-			while _playlist.size() < _current_song_idx + 2:
-				_append_random_song()
-		else:
-			# Non-infinite playlist starts again from the top.
-			_current_song_idx = 0
-	
-	return select_song_by_index(_current_song_idx)
+func select_next_song() -> int:
+	return select_song_by_index(_current_song_idx + 1)
 
 
 # Returns the id of the previous song in the playlist, and assumes it will
 # be played.
 # Wraps around if it reaches the top.
-# Returns `-1` if the playlist is empty.
+# Returns `-1` if the playlist is empty and not infinite.
 func select_previous_song():
-	if _playlist.empty():
-		return -1
-	
-	_current_song_idx -= 1
-	
-	if _current_song_idx <= 0:
-		_current_song_idx = _playlist.size() - 1
-	
-	return select_song_by_index(_current_song_idx)
+	return select_song_by_index(_current_song_idx - 1)
 
 # Returns the id of the song at a specific index in the playlist.
 # Assumes that song is now going to be played.
+# Negative indexes will wrap to the end of the playlist.
+# Returns -1 if the playlist is empty and not infinite.
 func select_song_by_index(idx: int):
+	if _library_song_ids.empty() || _playlist.empty() && !_infinite_playlist:
+		return -1
+	
+	if idx < 0:
+		idx = _playlist.size() + idx
+	
+	if _infinite_playlist && idx >= _playlist.size() - INFINITE_PLAYLIST_SONG_BUFFER:
+		# The infinite playlist grows before it reaches the end.
+		# The end of the list is always at least a certain amount of songs
+		# ahead of the current song.
+		while _playlist.size() <= idx + INFINITE_PLAYLIST_SONG_BUFFER:
+			_append_random_song()
+	
+	idx = idx % _playlist.size()
+	_current_song_idx = idx
+	
 	_songs_left_till_library_repeat.erase(_current_song_idx)
 	emit_signal("currently_playing_updated", idx)
 	return _playlist[idx]
@@ -99,6 +98,7 @@ func _on_songs_added_to_library(new_song_ids: Array):
 	for id in new_song_ids:
 		_library_song_ids[id] = null
 		_songs_left_till_library_repeat[id] = null
+
 
 # Call when the song library loses songs.
 func _on_songs_removed_from_library(removed_song_ids: Array):
@@ -122,6 +122,7 @@ func _append_random_song():
 	var pick_idx: int = randi() % _songs_left_till_library_repeat.size()
 	var id: int = _songs_left_till_library_repeat.keys()[pick_idx]
 	append_song_to_playlist(id)
+
 
 func append_song_to_playlist(song_id: int):
 	_playlist.append(song_id)
