@@ -10,7 +10,9 @@ signal currently_playing_updated(song_idx)
 
 # How many songs there will be at minimum between the current song and the
 # end of an infinite playlist.
-const INFINITE_PLAYLIST_SONG_BUFFER := 2
+const INFINITE_PLAYLIST_NEXT_SONGS_BUFFER := 4
+# How many songs to keep as "history" when running an infinite playlist.
+const INFINITE_PLAYLIST_MAX_HISTORY := 4
 
 # The playlist can be "infinite" in which case it will append a
 # new random song to the playlist every time it hits the last song.
@@ -83,12 +85,18 @@ func select_song_by_index(idx: int):
 	if idx < 0:
 		idx = _playlist.size() + idx
 	
-	if _infinite_playlist && idx >= _playlist.size() - INFINITE_PLAYLIST_SONG_BUFFER:
+	if _infinite_playlist:
 		# The infinite playlist grows before it reaches the end.
 		# The end of the list is always at least a certain amount of songs
 		# ahead of the current song.
-		while _playlist.size() <= idx + INFINITE_PLAYLIST_SONG_BUFFER:
+		while _playlist.size() <= idx + INFINITE_PLAYLIST_NEXT_SONGS_BUFFER:
 			_append_random_song()
+		
+		# The infinite playlist only keeps a certain amount of songs behind
+		# the current song.
+		while idx > INFINITE_PLAYLIST_MAX_HISTORY:
+			remove_song_at_index(0)
+			idx -= 1
 	
 	idx = idx % _playlist.size()
 	_current_song_idx = idx
