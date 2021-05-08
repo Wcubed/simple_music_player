@@ -24,6 +24,18 @@ func get_song_by_id(id: int) -> Object:
 	return _songs.get(id, null)
 
 
+func search_songs_by_title(search_text: String) -> Dictionary:
+	var search_text_lowercase := search_text.to_lower()
+	var matching_songs := {}
+	
+	for id in _songs.keys():
+		var song: Object = _songs[id]
+		if song.title.to_lower().find(search_text_lowercase) != -1:
+			matching_songs[id] = song
+	
+	return matching_songs
+
+
 func queue_scan_for_songs(path: String):
 	var task := {
 		"type": _background_worker.TASK_SCAN_SONGS,

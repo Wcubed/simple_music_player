@@ -168,10 +168,6 @@ func _on_PlaybackControls_volume_change_requested(new_volume: float):
 	_set_volume(new_volume)
 
 
-func _on_PlaylistUi_add_song_requested():
-	_show_file_popup()
-
-
 func _on_PlaybackControls_previous_song_requested():
 	_play_previous_song()
 
@@ -195,3 +191,11 @@ func _on_PlaylistUi_remove_song_by_index_requested(idx: int):
 	if _playlist.get_current_song_idx() == idx:
 		# If the currently playing song was deleted, 
 		_play_song_by_idx(idx)
+
+
+func _on_PlaylistUi_add_song_to_library_requested():
+	_show_file_popup()
+
+
+func _on_PlaylistUi_add_song_to_playlist_requested(id: int):
+	_playlist.append_song_to_playlist(id)

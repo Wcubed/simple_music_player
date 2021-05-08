@@ -20,6 +20,26 @@ margin_right = 139.0
 margin_bottom = 22.0
 text = "Add songs to library"
 
+[node name="SearchLibraryEntry" type="LineEdit" parent="HBoxContainer"]
+margin_left = 143.0
+margin_right = 1024.0
+margin_bottom = 22.0
+size_flags_horizontal = 3
+placeholder_text = "Search song to add to playlist..."
+
+[node name="SearchPopup" type="PopupMenu" parent="HBoxContainer/SearchLibraryEntry"]
+margin_left = -143.0
+margin_right = -127.0
+margin_bottom = 16.0
+focus_mode = 0
+
+[node name="ClearSearchButton" type="Button" parent="HBoxContainer"]
+visible = false
+margin_left = 1004.0
+margin_right = 1024.0
+margin_bottom = 22.0
+text = "<"
+
 [node name="HSeparator" type="HSeparator" parent="."]
 margin_top = 26.0
 margin_right = 1024.0
@@ -44,3 +64,8 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 [connection signal="pressed" from="HBoxContainer/AddSongButton" to="." method="_on_AddSongButton_pressed"]
+[connection signal="gui_input" from="HBoxContainer/SearchLibraryEntry" to="." method="_on_SearchLibraryEntry_gui_input"]
+[connection signal="text_changed" from="HBoxContainer/SearchLibraryEntry" to="." method="_on_SearchLibraryEntry_text_changed"]
+[connection signal="text_entered" from="HBoxContainer/SearchLibraryEntry" to="." method="_on_SearchLibraryEntry_text_entered"]
+[connection signal="index_pressed" from="HBoxContainer/SearchLibraryEntry/SearchPopup" to="." method="_on_SearchPopup_index_pressed"]
+[connection signal="pressed" from="HBoxContainer/ClearSearchButton" to="." method="_on_ClearSearchButton_pressed"]

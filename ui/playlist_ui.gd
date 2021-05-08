@@ -5,7 +5,17 @@ extends VBoxContainer
 signal play_song_by_index_requested(idx)
 # Emitted when the user wants to remove a song from the playlist.
 signal remove_song_by_index_requested(idx)
-signal add_song_requested()
+# User requested to open the file browser to add songs to the library.
+signal add_song_to_library_requested()
+# User requested to add a specific song to the playlist.
+# This is the song id as listed in the library, not the playlist index.
+signal add_song_to_playlist_requested(id)
+
+# How many items the song search popup will display before putting 
+# elipsis as the last item. This prevents the popup from growing 
+# taller than the window and obscuring the search bar.
+const MAX_ITEMS_IN_SEARCH_POPUP := 20
+const MAX_ITEMS_IN_SEARCH_END_ITEM := "..."
 
 
 var PlaylistEntry := preload("playlist_entry.tscn")
@@ -13,6 +23,10 @@ var _libary: Node = null
 
 onready var _scroll_container := $ScrollContainer
 onready var _container := $ScrollContainer/PlaylistContainer
+
+onready var _search_library_entry := $HBoxContainer/SearchLibraryEntry
+onready var _clear_search_button := $HBoxContainer/ClearSearchButton
+onready var _search_popup := $HBoxContainer/SearchLibraryEntry/SearchPopup
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -84,13 +98,75 @@ func _scroll_to_entry(entry: Control):
 		scrollbar.value = entry_y - scrollbar.page + entry_height
 
 
+func clear_library_search():
+	_search_library_entry.text = ""
+	_clear_search_button.hide()
+	_search_popup.hide()
+	_search_popup.clear()
+
+
+func show_library_search(search_text: String):
+	_clear_search_button.show()
+	_search_popup.clear()
+	
+	var search_results: Dictionary = _libary.search_songs_by_title(search_text)
+	
+	var count := 0
+	for id in search_results.keys():
+		var song: Object = search_results[id]
+		_search_popup.add_item(song.title, id)
+		
+		count += 1
+		# Prevent the search popup from growing too large.
+		if count >= MAX_ITEMS_IN_SEARCH_POPUP:
+			_search_popup.add_item("...")
+			break
+	
+	var popup_x: float = _search_library_entry.rect_global_position.x
+	var popup_y: float = _search_library_entry.rect_global_position.y + \
+		_search_library_entry.rect_size.y
+	var popup_width: float = _search_library_entry.rect_size.x
+	
+	_search_popup.popup(Rect2(popup_x, popup_y, popup_width, 1))
+
+
 func _on_entry_selected_by_pointer(idx: int):
 	emit_signal("play_song_by_index_requested", idx)
+
 
 func _on_entry_remove_button_pressed(idx: int):
 	emit_signal("remove_song_by_index_requested", idx)
 
 
 func _on_AddSongButton_pressed():
-	emit_signal("add_song_requested")
+	emit_signal("add_song_to_library_requested")
+
+
+func _on_ClearSearchButton_pressed():
+	clear_library_search()
+
+
+func _on_SearchLibraryEntry_text_changed(search_string: String):
+	if search_string == "":
+		clear_library_search()
+	else:
+		show_library_search(search_string)
+
+
+func _on_SearchLibraryEntry_gui_input(event: InputEvent):
+	if event.is_action_pressed("ui_cancel"):
+		clear_library_search()
+
+
+func _on_SearchLibraryEntry_text_entered(new_text: String):
+	# On pressing enter, we add the topmost song from the search 
+	# results to the playlist.
+	if _search_popup.get_item_count() > 0:
+		var song_id: int = _search_popup.get_item_id(0)
+		emit_signal("add_song_to_playlist_requested", song_id)
+
+
+func _on_SearchPopup_index_pressed(index: int):
+	if _search_popup.get_item_text(index) != MAX_ITEMS_IN_SEARCH_END_ITEM:
+		emit_signal("add_song_to_playlist_requested", _search_popup.get_item_id(index))
 
