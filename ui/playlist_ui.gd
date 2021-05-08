@@ -59,6 +59,29 @@ func _on_playlist_currently_playing_updated(song_idx: int):
 	
 	var current_playing := _container.get_child(song_idx)
 	current_playing.show_currently_playing(true)
+	
+	_scroll_to_entry(current_playing)
+
+
+# Scrolls the container so that the given song entry is visible.
+func _scroll_to_entry(entry: Control):
+	if entry == null:
+		return
+	
+	var scrollbar: VScrollBar = _scroll_container.get_v_scrollbar()
+	if scrollbar.page == 0:
+		return
+	
+	var min_visible_y := scrollbar.value
+	var max_visible_y := scrollbar.value + scrollbar.page
+	
+	var entry_y: float = entry.rect_position.y
+	var entry_height: float = entry.rect_size.y
+	
+	if entry_y < min_visible_y:
+		scrollbar.value = entry_y
+	elif entry_y + entry_height > max_visible_y:
+		scrollbar.value = entry_y - scrollbar.page + entry_height
 
 
 func _on_entry_selected_by_pointer(idx: int):
