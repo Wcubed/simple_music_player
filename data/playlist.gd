@@ -2,8 +2,7 @@ extends Node
 
 # The playlist_idx is where in the playlist this song was added.
 signal song_added(song_id, playlist_idx)
-# The indexes are locations in the playlist, not song id's.
-signal currently_playing_updated(new_idx, previous_idx)
+signal currently_playing_updated(song_idx)
 
 # The playlist keeps track of which songs to play from the library
 # and in what order.
@@ -56,7 +55,6 @@ func select_next_song(infinite_playlist: bool) -> int:
 	if _playlist.empty() && !infinite_playlist:
 		return -1
 	
-	var previous_song_idx := _current_song_idx
 	_current_song_idx += 1
 	
 	if _current_song_idx >= _playlist.size() - 1:
@@ -69,9 +67,7 @@ func select_next_song(infinite_playlist: bool) -> int:
 			# Non-infinite playlist starts again from the top.
 			_current_song_idx = 0
 	
-	_songs_left_till_library_repeat.erase(_current_song_idx)
-	emit_signal("currently_playing_updated", _current_song_idx, previous_song_idx)
-	return _playlist[_current_song_idx]
+	return select_song_by_index(_current_song_idx)
 
 
 # Returns the id of the previous song in the playlist, and assumes it will
@@ -82,15 +78,19 @@ func select_previous_song():
 	if _playlist.empty():
 		return -1
 	
-	var previous_song_idx := _current_song_idx
 	_current_song_idx -= 1
 	
 	if _current_song_idx <= 0:
 		_current_song_idx = _playlist.size() - 1
 	
+	return select_song_by_index(_current_song_idx)
+
+# Returns the id of the song at a specific index in the playlist.
+# Assumes that song is now going to be played.
+func select_song_by_index(idx: int):
 	_songs_left_till_library_repeat.erase(_current_song_idx)
-	emit_signal("currently_playing_updated", _current_song_idx, previous_song_idx)
-	return _playlist[_current_song_idx]
+	emit_signal("currently_playing_updated", idx)
+	return _playlist[idx]
 
 
 # Call when the song library acquires new songs. This makes sure the

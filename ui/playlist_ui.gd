@@ -1,12 +1,17 @@
 extends VBoxContainer
 
-
+# Emitted when the user requests the song at a specific index in the playlist
+# is played.
 signal play_song_by_index_requested(idx)
 signal add_song_requested()
 
 
 var PlaylistEntry := preload("playlist_entry.tscn")
 var _libary: Node = null
+
+# Keeps track of the song that is currently showns as "playing"
+# that way it can be unhighlighted when another song is selected.
+var _current_playing_idx := -1
 
 onready var _scroll_container := $ScrollContainer
 onready var _container := $ScrollContainer/PlaylistContainer
@@ -36,22 +41,23 @@ func _on_playlist_song_added(song_id: int, playlist_idx: int):
 	else:
 		_container.add_child(entry)
 	
-	entry.show_song(song)
+	entry.show_song(song_id, song)
 	
 	entry.connect("selected_by_pointer", self, \
-		"_on_entry_pointer_selected_by_pointer", [_container.get_child_count() - 1])
+		"_on_entry_selected_by_pointer", [_container.get_child_count() - 1])
+	_libary.connect("cover_image_loaded", entry, "_on_library_cover_image_loaded")
 
 
-func _on_playlist_currently_playing_updated(current_idx: int, previous_idx: int):
-	if previous_idx >= 0:
-		_container.get_child(previous_idx).show_currently_playing(false)
+func _on_playlist_currently_playing_updated(song_idx: int):
+	if _current_playing_idx >= 0:
+		_container.get_child(_current_playing_idx).show_currently_playing(false)
 	
-	var current_playing := _container.get_child(current_idx)
+	var current_playing := _container.get_child(song_idx)
 	current_playing.show_currently_playing(true)
+	_current_playing_idx = song_idx
 
 
-
-func _on_entry_pointer_selected_by_pointer(idx: int):
+func _on_entry_selected_by_pointer(idx: int):
 	emit_signal("play_song_by_index_requested", idx)
 
 
