@@ -63,6 +63,8 @@ current_path = "/WybeData/Library/Music/"
 [connection signal="cover_image_loaded" from="Library" to="." method="_on_Library_cover_image_loaded"]
 [connection signal="songs_added" from="Library" to="Playlist" method="_on_songs_added_to_library"]
 [connection signal="songs_removed" from="Library" to="Playlist" method="_on_songs_removed_from_library"]
+[connection signal="currently_playing_updated" from="Playlist" to="VBoxContainer/PlaylistUi" method="_on_playlist_currently_playing_updated"]
+[connection signal="song_added" from="Playlist" to="VBoxContainer/PlaylistUi" method="_on_playlist_song_added"]
 [connection signal="finished" from="AudioStreamPlayer" to="." method="_on_AudioStreamPlayer_finished"]
 [connection signal="timeout" from="UpdateTimer" to="." method="_on_UpdateTimer_timeout"]
 [connection signal="add_song_requested" from="VBoxContainer/PlaylistUi" to="." method="_on_PlaylistUi_add_song_requested"]

@@ -56,30 +56,30 @@ margin_top = 26.0
 margin_right = 924.0
 margin_bottom = 51.0
 
-[node name="InfinitePlaylistButton" type="Button" parent="VBoxContainer/BottomContainer"]
-margin_right = 108.0
-margin_bottom = 25.0
-toggle_mode = true
-pressed = true
-text = "Infinite Playlist"
-
 [node name="PreviousSongButton" type="Button" parent="VBoxContainer/BottomContainer"]
-margin_left = 112.0
-margin_right = 147.0
+margin_right = 35.0
 margin_bottom = 25.0
 text = "|<<"
 
 [node name="PlayPauseButton" type="Button" parent="VBoxContainer/BottomContainer"]
-margin_left = 151.0
-margin_right = 201.0
+margin_left = 39.0
+margin_right = 89.0
 margin_bottom = 25.0
 rect_min_size = Vector2( 50, 25 )
 
 [node name="NextSongButton" type="Button" parent="VBoxContainer/BottomContainer"]
-margin_left = 205.0
-margin_right = 240.0
+margin_left = 93.0
+margin_right = 128.0
 margin_bottom = 25.0
 text = ">>|"
+
+[node name="InfinitePlaylistButton" type="Button" parent="VBoxContainer/BottomContainer"]
+margin_left = 132.0
+margin_right = 240.0
+margin_bottom = 25.0
+toggle_mode = true
+pressed = true
+text = "Infinite Playlist"
 
 [node name="SongTitleLabel" type="Label" parent="VBoxContainer/BottomContainer"]
 margin_left = 244.0

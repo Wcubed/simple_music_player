@@ -1,5 +1,10 @@
 extends Node
 
+# The playlist_idx is where in the playlist this song was added.
+signal song_added(song_id, playlist_idx)
+# The indexes are locations in the playlist, not song id's.
+signal currently_playing_updated(new_idx, previous_idx)
+
 # The playlist keeps track of which songs to play from the library
 # and in what order.
 # TODO: The playlist can be "infinite" in which case it will append a
@@ -44,27 +49,28 @@ func get_current_song_id() -> int:
 # as soon as the last song get's played. When false, the playlist will
 # repeat from the top when hitting the end.
 # Returns `-1` if the playlist is empty and not requested to be infinite.
-func get_next_song_id(infinite_playlist: bool) -> int:
+func select_next_song(infinite_playlist: bool) -> int:
 	if _library_song_ids.empty():
 		# If the library is empty, there is nothing to play.
 		return -1
 	if _playlist.empty() && !infinite_playlist:
 		return -1
 	
+	var previous_song_idx := _current_song_idx
 	_current_song_idx += 1
-	
 	
 	if _current_song_idx >= _playlist.size() - 1:
 		if infinite_playlist:
 			# The infinite playlist keeps growing before it reaches the end.
 			# It is always at least 1 song ahead of the current song.
-			while _playlist.size() < _current_song_idx + 1:
+			while _playlist.size() < _current_song_idx + 2:
 				_append_random_song()
 		else:
 			# Non-infinite playlist starts again from the top.
 			_current_song_idx = 0
 	
 	_songs_left_till_library_repeat.erase(_current_song_idx)
+	emit_signal("currently_playing_updated", _current_song_idx, previous_song_idx)
 	return _playlist[_current_song_idx]
 
 
@@ -72,16 +78,18 @@ func get_next_song_id(infinite_playlist: bool) -> int:
 # be played.
 # Wraps around if it reaches the top.
 # Returns `-1` if the playlist is empty.
-func get_previous_song_id():
+func select_previous_song():
 	if _playlist.empty():
 		return -1
 	
+	var previous_song_idx := _current_song_idx
 	_current_song_idx -= 1
 	
 	if _current_song_idx <= 0:
 		_current_song_idx = _playlist.size() - 1
 	
 	_songs_left_till_library_repeat.erase(_current_song_idx)
+	emit_signal("currently_playing_updated", _current_song_idx, previous_song_idx)
 	return _playlist[_current_song_idx]
 
 
@@ -117,6 +125,7 @@ func _append_random_song():
 
 func append_song_to_playlist(song_id: int):
 	_playlist.append(song_id)
+	emit_signal("song_added", song_id, _playlist.size() - 1)
 
 
 func _refill_songs_left_till_library_repeat():

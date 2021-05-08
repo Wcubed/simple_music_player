@@ -22,7 +22,7 @@ onready var _song_load_dialog := $SongLoadDialog
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	_song_load_dialog.filters = _library._background_worker.AUDIO_FILE_FILTERS
-	_playlist_ui.set_playlist(_playlist)
+	_playlist_ui.set_library(_library)
 	
 	_set_volume(0.8)
 
@@ -33,12 +33,12 @@ func _show_file_popup():
 
 func _play_next_song():
 	var infinite: bool = _playback_controls.is_infinite_playlist_enabled()
-	var song: Object = _library.get_song_by_id(_playlist.get_next_song_id(infinite))
+	var song: Object = _library.get_song_by_id(_playlist.select_next_song(infinite))
 	_play_song(song)
 
 
 func _play_previous_song():
-	var song: Object = _library.get_song_by_id(_playlist.get_previous_song_id())
+	var song: Object = _library.get_song_by_id(_playlist.select_previous_song())
 	_play_song(song)
 
 
