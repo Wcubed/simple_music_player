@@ -33,7 +33,7 @@ var _current_song_idx: int = -1
 var _library_song_ids := {}
 # Has id's of all the songs in the library (with 'null' values. it's a hash-set)
 # When a random song is needed it is selected from here.
-# When a song is played, it is removed from the set.
+# When a song is added to the playlist, it is removed from the set.
 # This guarantees that all songs will be played at least once before the library
 # repeats.
 # Re-fills from the `library_song_ids` when empty.
@@ -101,7 +101,6 @@ func select_song_by_index(idx: int):
 	idx = idx % _playlist.size()
 	_current_song_idx = idx
 	
-	_songs_left_till_library_repeat.erase(_current_song_idx)
 	emit_signal("currently_playing_updated", idx)
 	return _playlist[idx]
 
@@ -140,7 +139,17 @@ func _append_random_song():
 
 func append_song_to_playlist(song_id: int):
 	_playlist.append(song_id)
+	_songs_left_till_library_repeat.erase(_current_song_idx)
 	emit_signal("song_added", song_id, _playlist.size() - 1)
+
+
+func add_song_after_current_song(song_id: int):
+	if _playlist.empty():
+		append_song_to_playlist(song_id)
+	else:
+		_playlist.insert(_current_song_idx + 1, song_id)
+		_songs_left_till_library_repeat.erase(_current_song_idx)
+		emit_signal("song_added", song_id, _current_song_idx)
 
 
 func remove_song_at_index(song_index: int):

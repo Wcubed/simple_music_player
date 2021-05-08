@@ -198,4 +198,4 @@ func _on_PlaylistUi_add_song_to_library_requested():
 
 
 func _on_PlaylistUi_add_song_to_playlist_requested(id: int):
-	_playlist.append_song_to_playlist(id)
+	_playlist.add_song_after_current_song(id)

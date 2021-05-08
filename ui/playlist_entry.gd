@@ -1,7 +1,7 @@
 extends HBoxContainer
 
-signal selected_by_pointer()
-signal remove_button_pressed()
+signal selected_by_pointer(playlist_index)
+signal remove_button_pressed(playlist_index)
 
 const PLAYING_COLOR = Color(0.3, 1.0, 0.3)
 const NOT_PLAYING_COLOR = Color(0.9, 0.9, 0.9)
@@ -42,7 +42,7 @@ func show_currently_playing(playing: bool):
 
 func _on_PlaylistEntry_gui_input(event: InputEvent):
 	if event.is_action_pressed("ui_pointer_select"):
-		emit_signal("selected_by_pointer")
+		emit_signal("selected_by_pointer", get_index())
 
 func _on_library_cover_image_loaded(song_id: int, image: ImageTexture):
 	if song_id == _song_id:
@@ -50,4 +50,4 @@ func _on_library_cover_image_loaded(song_id: int, image: ImageTexture):
 
 
 func _on_RemoveButton_pressed():
-	emit_signal("remove_button_pressed")
+	emit_signal("remove_button_pressed", get_index())

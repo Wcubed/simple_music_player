@@ -58,14 +58,14 @@ func add_songs(songs: Array):
 	var new_song_ids := []
 	
 	for song in songs:
-		print("Adding: '%s'" % song.title)
-		
 		_songs[_next_song_id] = song
 		new_song_ids.append(_next_song_id)
 		queue_scan_for_cover_art(song.path, _next_song_id)
 		
 		_next_song_id += 1
-		
+	
+	print("%s songs added" % songs.size())
+	
 	emit_signal("songs_added", new_song_ids)
 
 

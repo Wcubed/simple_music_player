@@ -39,7 +39,8 @@ func set_library(library_node: Node):
 
 
 # Call when a song is added to the playlist.
-# The id indicates which song to add, the idx indicates where to add it.
+# The id indicates which song to add, the idx indicates after which location
+# to insert it.
 func _on_playlist_song_added(song_id: int, playlist_idx: int):
 	var song: Object = _libary.get_song_by_id(song_id)
 	if song == null:
@@ -48,17 +49,17 @@ func _on_playlist_song_added(song_id: int, playlist_idx: int):
 	var entry := PlaylistEntry.instance()
 	
 	if playlist_idx < _container.get_child_count():
-		var node_to_insert_below := _container.get_child(playlist_idx)
-		_container.add_child_below_node(entry, node_to_insert_below)
+		var node_to_insert_below: Control = _container.get_child(playlist_idx)
+		_container.add_child_below_node(node_to_insert_below, entry)
 	else:
 		_container.add_child(entry)
 	
 	entry.show_song(song_id, song)
 	
 	entry.connect("selected_by_pointer", self, \
-		"_on_entry_selected_by_pointer", [playlist_idx])
+		"_on_entry_selected_by_pointer")
 	entry.connect("remove_button_pressed", self, \
-		"_on_entry_remove_button_pressed", [playlist_idx])
+		"_on_entry_remove_button_pressed")
 	_libary.connect("cover_image_loaded", entry, "_on_library_cover_image_loaded")
 
 
