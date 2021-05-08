@@ -165,9 +165,13 @@ func _on_SearchLibraryEntry_text_entered(new_text: String):
 	if _search_popup.get_item_count() > 0:
 		var song_id: int = _search_popup.get_item_id(0)
 		emit_signal("add_song_to_playlist_requested", song_id)
+		
+		clear_library_search()
 
 
 func _on_SearchPopup_index_pressed(index: int):
 	if _search_popup.get_item_text(index) != MAX_ITEMS_IN_SEARCH_END_ITEM:
 		emit_signal("add_song_to_playlist_requested", _search_popup.get_item_id(index))
+		
+		clear_library_search()
 
