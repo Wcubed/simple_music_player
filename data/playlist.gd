@@ -148,11 +148,13 @@ func add_song_after_current_song(song_id: int):
 		append_song_to_playlist(song_id)
 	else:
 		_playlist.insert(_current_song_idx + 1, song_id)
-		_songs_left_till_library_repeat.erase(_current_song_idx)
+		_songs_left_till_library_repeat.erase(song_id)
 		emit_signal("song_added", song_id, _current_song_idx)
 
 
 func remove_song_at_index(song_index: int):
+	if song_index < _current_song_idx:
+		_current_song_idx -= 1
 	_playlist.remove(song_index)
 	emit_signal("song_removed", song_index)
 
