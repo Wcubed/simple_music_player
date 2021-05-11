@@ -139,7 +139,7 @@ func _append_random_song():
 
 func append_song_to_playlist(song_id: int):
 	_playlist.append(song_id)
-	_songs_left_till_library_repeat.erase(_current_song_idx)
+	_songs_left_till_library_repeat.erase(song_id)
 	emit_signal("song_added", song_id, _playlist.size() - 1)
 
 
