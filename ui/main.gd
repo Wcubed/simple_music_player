@@ -27,6 +27,9 @@ func _ready():
 	_update_song_count()
 	
 	_set_volume(0.8)
+	
+	# Prevent sizing the window so small that the UI doesn't fit anymore.
+	OS.min_window_size = get_combined_minimum_size()
 
 
 func _show_file_popup():
