@@ -24,12 +24,17 @@ func _ready():
 	_song_load_dialog.filters = _library._background_worker.AUDIO_FILE_FILTERS
 	_playlist_ui.set_library(_library)
 	_playlist.set_infinite(_playback_controls.is_infinite_playlist_enabled())
+	_update_song_count()
 	
 	_set_volume(0.8)
 
 
 func _show_file_popup():
 	_song_load_dialog.popup_centered(Vector2(700, 400))
+
+
+func _update_song_count():
+	_playlist_ui.set_library_song_count(_library.get_song_count())
 
 
 func _play_next_song():
@@ -199,3 +204,11 @@ func _on_PlaylistUi_add_song_to_library_requested():
 
 func _on_PlaylistUi_add_song_to_playlist_requested(id: int):
 	_playlist.add_song_after_current_song(id)
+
+
+func _on_Library_songs_added(_ids):
+	_update_song_count()
+
+
+func _on_Library_songs_removed(_ids):
+	_update_song_count()

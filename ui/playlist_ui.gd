@@ -24,6 +24,7 @@ var _libary: Node = null
 onready var _scroll_container := $ScrollContainer
 onready var _container := $ScrollContainer/PlaylistContainer
 
+onready var _song_count_label := $HBoxContainer/SongCountLabel
 onready var _search_library_entry := $HBoxContainer/SearchLibraryEntry
 onready var _clear_search_button := $HBoxContainer/ClearSearchButton
 onready var _search_popup := $HBoxContainer/SearchLibraryEntry/SearchPopup
@@ -129,6 +130,10 @@ func show_library_search(search_text: String):
 	var popup_width: float = _search_library_entry.rect_size.x
 	
 	_search_popup.popup(Rect2(popup_x, popup_y, popup_width, 1))
+
+
+func set_library_song_count(count: int):
+	_song_count_label.text = "%s songs in library" % count
 
 
 func _on_entry_selected_by_pointer(idx: int):

@@ -15,13 +15,21 @@ __meta__ = {
 margin_right = 1024.0
 margin_bottom = 22.0
 
+[node name="SongCountLabel" type="Label" parent="HBoxContainer"]
+margin_right = 8.0
+margin_bottom = 22.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="AddSongButton" type="Button" parent="HBoxContainer"]
-margin_right = 139.0
+margin_left = 12.0
+margin_right = 151.0
 margin_bottom = 22.0
 text = "Add songs to library"
 
 [node name="SearchLibraryEntry" type="LineEdit" parent="HBoxContainer"]
-margin_left = 143.0
+margin_left = 155.0
 margin_right = 1024.0
 margin_bottom = 22.0
 size_flags_horizontal = 3
@@ -63,6 +71,7 @@ margin_bottom = 600.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
 [connection signal="pressed" from="HBoxContainer/AddSongButton" to="." method="_on_AddSongButton_pressed"]
 [connection signal="gui_input" from="HBoxContainer/SearchLibraryEntry" to="." method="_on_SearchLibraryEntry_gui_input"]
 [connection signal="text_changed" from="HBoxContainer/SearchLibraryEntry" to="." method="_on_SearchLibraryEntry_text_changed"]
