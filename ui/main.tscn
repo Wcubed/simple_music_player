@@ -58,8 +58,8 @@ window_title = "Open a File or Directory"
 resizable = true
 mode = 3
 access = 2
-current_dir = "/media/data/WybeData/Projects/Godot/Programs/simple_music_player"
-current_path = "/media/data/WybeData/Projects/Godot/Programs/simple_music_player/"
+current_dir = "/media/data/WybeData/Library/Music/youtube-dl"
+current_path = "/media/data/WybeData/Library/Music/youtube-dl/"
 
 [connection signal="cover_image_loaded" from="Library" to="." method="_on_Library_cover_image_loaded"]
 [connection signal="songs_added" from="Library" to="Playlist" method="_on_songs_added_to_library"]

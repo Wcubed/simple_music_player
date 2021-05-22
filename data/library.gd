@@ -20,6 +20,10 @@ func _ready():
 	pass
 
 
+func get_song_count() -> int:
+	return _songs.size()
+
+
 func get_song_by_id(id: int) -> Object:
 	return _songs.get(id, null)
 
