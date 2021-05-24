@@ -9,12 +9,12 @@ signal previous_song_requested()
 signal volume_change_requested(new_volume)
 signal infinite_playlist_button_toggled(new_state)
 
-export(Texture) var _play_icon = preload("resources/icon_play.svg")
-export(Texture) var _pause_icon = preload("resources/icon_pause.svg")
+export(Texture) var _play_icon = preload("resources/icons/icon_play.svg")
+export(Texture) var _pause_icon = preload("resources/icons/icon_pause.svg")
 
-export(Texture) var _volume_high = preload("resources/icon_volume_high.svg")
-export(Texture) var _volume_mid = preload("resources/icon_volume_mid.svg")
-export(Texture) var _volume_low = preload("resources/icon_volume_low.svg")
+export(Texture) var _volume_high = preload("resources/icons/icon_volume_high.svg")
+export(Texture) var _volume_mid = preload("resources/icons/icon_volume_mid.svg")
+export(Texture) var _volume_low = preload("resources/icons/icon_volume_low.svg")
 
 var _paused := true
 

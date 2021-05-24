@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/icon_volume_low.svg-9c45bdb13dc5cf1e35610cb94a175a47.stex"
+path="res://.import/icon_volume_low.svg-3972b86b4052998f3eb8a266cf31bbbf.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://ui/resources/icon_volume_low.svg"
-dest_files=[ "res://.import/icon_volume_low.svg-9c45bdb13dc5cf1e35610cb94a175a47.stex" ]
+source_file="res://ui/resources/icons/icon_volume_low.svg"
+dest_files=[ "res://.import/icon_volume_low.svg-3972b86b4052998f3eb8a266cf31bbbf.stex" ]
 
 [params]
 

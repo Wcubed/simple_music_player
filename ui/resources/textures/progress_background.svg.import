@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/icon_next_song.svg-d7fa46fcd22d2a63deba41950b94b9f5.stex"
+path="res://.import/progress_background.svg-7d7118028f88652b4a3c9a93f52ce0a3.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://ui/resources/icon_next_song.svg"
-dest_files=[ "res://.import/icon_next_song.svg-d7fa46fcd22d2a63deba41950b94b9f5.stex" ]
+source_file="res://ui/resources/textures/progress_background.svg"
+dest_files=[ "res://.import/progress_background.svg-7d7118028f88652b4a3c9a93f52ce0a3.stex" ]
 
 [params]
 
@@ -20,7 +20,7 @@ compress/hdr_mode=0
 compress/bptc_ldr=0
 compress/normal_map=0
 flags/repeat=0
-flags/filter=true
+flags/filter=false
 flags/mipmaps=false
 flags/anisotropic=false
 flags/srgb=2

@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/icon_infinity.svg-1eb8145849150cc6f38502fd5d5e0ca1.stex"
+path="res://.import/icon_infinity.svg-469da35e0225452a86b5fc892ef42ab2.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://ui/resources/icon_infinity.svg"
-dest_files=[ "res://.import/icon_infinity.svg-1eb8145849150cc6f38502fd5d5e0ca1.stex" ]
+source_file="res://ui/resources/icons/icon_infinity.svg"
+dest_files=[ "res://.import/icon_infinity.svg-469da35e0225452a86b5fc892ef42ab2.stex" ]
 
 [params]
 

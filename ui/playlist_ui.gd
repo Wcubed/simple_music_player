@@ -49,7 +49,10 @@ func _on_playlist_song_added(song_id: int, playlist_idx: int):
 	
 	var entry := PlaylistEntry.instance()
 	
-	if playlist_idx < _container.get_child_count():
+	if playlist_idx < 0:
+		_container.add_child(entry)
+		_container.move_child(entry, 0)
+	elif playlist_idx < _container.get_child_count():
 		var node_to_insert_below: Control = _container.get_child(playlist_idx)
 		_container.add_child_below_node(node_to_insert_below, entry)
 	else:
