@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/progress_background.png-142665db90f3fc790994aee3acd34d39.stex"
+path="res://.import/icon_play.svg-a0a5903018d36ae5a2274831fcffa16c.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://ui/resources/progress_background.png"
-dest_files=[ "res://.import/progress_background.png-142665db90f3fc790994aee3acd34d39.stex" ]
+source_file="res://ui/resources/icon_play.svg"
+dest_files=[ "res://.import/icon_play.svg-a0a5903018d36ae5a2274831fcffa16c.stex" ]
 
 [params]
 

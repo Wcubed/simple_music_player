@@ -1,6 +1,11 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://ui/playback_controls.gd" type="Script" id=1]
+[ext_resource path="res://ui/resources/icon_play.svg" type="Texture" id=2]
+[ext_resource path="res://ui/resources/icon_next_song.svg" type="Texture" id=4]
+[ext_resource path="res://ui/resources/icon_previous_song.svg" type="Texture" id=5]
+[ext_resource path="res://ui/resources/icon_infinity.svg" type="Texture" id=6]
+[ext_resource path="res://ui/resources/icon_volume_low.svg" type="Texture" id=7]
 
 [node name="PlaybackControls" type="HBoxContainer"]
 anchor_right = 1.0
@@ -54,40 +59,50 @@ align = 2
 [node name="BottomContainer" type="HBoxContainer" parent="VBoxContainer"]
 margin_top = 26.0
 margin_right = 924.0
-margin_bottom = 51.0
+margin_bottom = 50.0
 
 [node name="PreviousSongButton" type="Button" parent="VBoxContainer/BottomContainer"]
-margin_right = 35.0
-margin_bottom = 25.0
-text = "|<<"
+margin_right = 37.0
+margin_bottom = 24.0
+hint_tooltip = "Previous Song"
+icon = ExtResource( 5 )
 
 [node name="PlayPauseButton" type="Button" parent="VBoxContainer/BottomContainer"]
-margin_left = 39.0
-margin_right = 89.0
-margin_bottom = 25.0
-rect_min_size = Vector2( 50, 25 )
+margin_left = 41.0
+margin_right = 69.0
+margin_bottom = 24.0
+hint_tooltip = "Play / Pause"
+icon = ExtResource( 2 )
 
 [node name="NextSongButton" type="Button" parent="VBoxContainer/BottomContainer"]
-margin_left = 93.0
-margin_right = 128.0
-margin_bottom = 25.0
-text = ">>|"
+margin_left = 73.0
+margin_right = 110.0
+margin_bottom = 24.0
+hint_tooltip = "Next song"
+icon = ExtResource( 4 )
 
 [node name="InfinitePlaylistButton" type="Button" parent="VBoxContainer/BottomContainer"]
-margin_left = 132.0
-margin_right = 240.0
-margin_bottom = 25.0
+margin_left = 114.0
+margin_right = 171.0
+margin_bottom = 24.0
+hint_tooltip = "Infinite Playlist"
 toggle_mode = true
 pressed = true
-text = "Infinite Playlist"
+icon = ExtResource( 6 )
 
 [node name="SongTitleLabel" type="Label" parent="VBoxContainer/BottomContainer"]
-margin_left = 244.0
+margin_left = 175.0
 margin_top = 1.0
-margin_right = 820.0
+margin_right = 800.0
 margin_bottom = 23.0
 size_flags_horizontal = 3
 clip_text = true
+
+[node name="VolumeIcon" type="TextureRect" parent="VBoxContainer/BottomContainer"]
+margin_left = 804.0
+margin_right = 820.0
+margin_bottom = 24.0
+texture = ExtResource( 7 )
 
 [node name="VolumeSlider" type="HSlider" parent="VBoxContainer/BottomContainer"]
 margin_left = 824.0
@@ -96,6 +111,7 @@ margin_bottom = 16.0
 rect_min_size = Vector2( 100, 0 )
 max_value = 1.0
 step = 0.1
+
 [connection signal="gui_input" from="VBoxContainer/TopContainer/SongProgress" to="." method="_on_SongProgress_gui_input"]
 [connection signal="pressed" from="VBoxContainer/BottomContainer/PreviousSongButton" to="." method="_on_PreviousSongButton_pressed"]
 [connection signal="pressed" from="VBoxContainer/BottomContainer/PlayPauseButton" to="." method="_on_PlayPauseButton_pressed"]

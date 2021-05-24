@@ -9,6 +9,13 @@ signal previous_song_requested()
 signal volume_change_requested(new_volume)
 signal infinite_playlist_button_toggled(new_state)
 
+export(Texture) var _play_icon = preload("resources/icon_play.svg")
+export(Texture) var _pause_icon = preload("resources/icon_pause.svg")
+
+export(Texture) var _volume_high = preload("resources/icon_volume_high.svg")
+export(Texture) var _volume_mid = preload("resources/icon_volume_mid.svg")
+export(Texture) var _volume_low = preload("resources/icon_volume_low.svg")
+
 var _paused := true
 
 onready var _song_cover_image := $SongCoverImage
@@ -20,6 +27,8 @@ onready var _song_progress := $VBoxContainer/TopContainer/SongProgress
 onready var _play_pause_button := $VBoxContainer/BottomContainer/PlayPauseButton
 onready var _infinite_playlist_button := $VBoxContainer/BottomContainer/InfinitePlaylistButton
 onready var _song_title := $VBoxContainer/BottomContainer/SongTitleLabel
+
+onready var _volume_icon := $VBoxContainer/BottomContainer/VolumeIcon
 onready var _volume_slider := $VBoxContainer/BottomContainer/VolumeSlider
 
 
@@ -48,9 +57,9 @@ func update_total_time(seconds: float):
 func update_paused(paused: bool):
 	_paused = paused
 	if _paused:
-		_play_pause_button.text = ">"
+		_play_pause_button.icon = _play_icon
 	else:
-		_play_pause_button.text = "||"
+		_play_pause_button.icon = _pause_icon
 
 
 func update_cover_image(image: ImageTexture):
@@ -63,6 +72,13 @@ func update_song_title(title: String):
 
 func update_volume(volume: float):
 	_volume_slider.value = volume
+	
+	if volume < 0.3:
+		_volume_icon.texture = _volume_low
+	elif volume >= 0.3 && volume < 0.7:
+		_volume_icon.texture = _volume_mid
+	else:
+		_volume_icon.texture = _volume_high
 
 
 func _seconds_to_time_string(seconds: float) -> String:
