@@ -20,6 +20,11 @@ run/low_processor_mode=true
 config/icon="res://icon.png"
 config/windows_native_icon="res://icon.ico"
 
+[display]
+
+window/size/width=600
+window/size/height=660
+
 [editor_plugins]
 
 enabled=PoolStringArray( "res://addons/quick_export/plugin.cfg" )
