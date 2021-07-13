@@ -5,6 +5,7 @@ const MIN_VOLUME_DB := -60.0
 
 var _stream_total_length: float = 0
 var _playback_time: float = 0
+var _large_ui_height: float = 0
 
 onready var _library := $Library
 onready var _playlist := $Playlist
@@ -27,6 +28,8 @@ func _ready():
 	_update_song_count()
 	
 	_set_volume(0.8)
+	
+	_large_ui_height = OS.window_size.y
 	
 	# Prevent sizing the window so small that the UI doesn't fit anymore.
 	OS.min_window_size = get_combined_minimum_size()
@@ -117,6 +120,24 @@ func _set_volume(volume: float):
 func _on_UpdateTimer_timeout():
 	_playback_time = _stream_player.get_playback_position()
 	_playback_controls.update_time_playing(_playback_time)
+
+
+func _switch_to_small_ui():
+	_large_ui_height = OS.window_size.y
+	_playlist_ui.hide()
+	
+	var min_size := get_combined_minimum_size()
+	OS.min_window_size = min_size
+	OS.window_size = Vector2(OS.window_size.x, min_size.y)
+	# The width is an arbitrary large number
+	OS.max_window_size = Vector2(2000, min_size.y)
+
+
+func _switch_to_large_ui():
+	OS.max_window_size = Vector2(0, 0)
+	OS.window_size = Vector2(OS.window_size.x, _large_ui_height)
+	_playlist_ui.show()
+	OS.min_window_size = get_combined_minimum_size()
 
 
 func _unhandled_key_input(event):
@@ -215,3 +236,10 @@ func _on_Library_songs_added(_ids):
 
 func _on_Library_songs_removed(_ids):
 	_update_song_count()
+
+
+func _on_PlaybackControls_small_ui_button_toggled(new_state: bool):
+	if new_state:
+		_switch_to_small_ui()
+	else:
+		_switch_to_large_ui()

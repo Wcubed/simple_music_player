@@ -8,6 +8,7 @@ signal previous_song_requested()
 # Volume is in range [0, 1]
 signal volume_change_requested(new_volume)
 signal infinite_playlist_button_toggled(new_state)
+signal small_ui_button_toggled(new_state)
 
 export(Texture) var _play_icon = preload("resources/icons/icon_play.svg")
 export(Texture) var _pause_icon = preload("resources/icons/icon_pause.svg")
@@ -26,6 +27,7 @@ onready var _song_progress := $VBoxContainer/TopContainer/SongProgress
 
 onready var _play_pause_button := $VBoxContainer/BottomContainer/PlayPauseButton
 onready var _infinite_playlist_button := $VBoxContainer/BottomContainer/InfinitePlaylistButton
+onready var _small_ui_button := $VBoxContainer/BottomContainer/SmallUIButton
 onready var _song_title := $VBoxContainer/BottomContainer/SongTitleLabel
 
 onready var _volume_icon := $VBoxContainer/BottomContainer/VolumeIcon
@@ -128,3 +130,12 @@ func _on_VolumeSlider_value_changed(value: float):
 
 func _on_InfinitePlaylistButton_toggled(button_pressed: bool):
 	emit_signal("infinite_playlist_button_toggled", button_pressed)
+
+
+func _on_SmallUIButton_toggled(button_pressed: bool):
+	emit_signal("small_ui_button_toggled", button_pressed)
+	
+	if button_pressed:
+		_small_ui_button.text = "<>"
+	else:
+		_small_ui_button.text = "><"

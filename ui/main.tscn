@@ -81,6 +81,7 @@ current_path = "/media/data/WybeData/Library/Music/youtube-dl/"
 [connection signal="play_requested" from="VBoxContainer/PlaybackControls" to="." method="_on_PlaybackControls_play_requested"]
 [connection signal="previous_song_requested" from="VBoxContainer/PlaybackControls" to="." method="_on_PlaybackControls_previous_song_requested"]
 [connection signal="seek_requested" from="VBoxContainer/PlaybackControls" to="." method="_on_PlaybackControls_seek_requested"]
+[connection signal="small_ui_button_toggled" from="VBoxContainer/PlaybackControls" to="." method="_on_PlaybackControls_small_ui_button_toggled"]
 [connection signal="volume_change_requested" from="VBoxContainer/PlaybackControls" to="." method="_on_PlaybackControls_volume_change_requested"]
 [connection signal="dir_selected" from="SongLoadDialog" to="." method="_on_SongLoadDialog_dir_selected"]
 [connection signal="file_selected" from="SongLoadDialog" to="." method="_on_SongLoadDialog_file_selected"]
