@@ -18,7 +18,7 @@ const MAX_ITEMS_IN_SEARCH_POPUP := 20
 const MAX_ITEMS_IN_SEARCH_END_ITEM := "..."
 
 
-var PlaylistEntry := preload("playlist_entry.tscn")
+var PlaylistEntry := preload("PlaylistEntry.tscn")
 var _libary: Node = null
 
 onready var _scroll_container := $ScrollContainer

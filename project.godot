@@ -15,7 +15,7 @@ _global_script_class_icons={
 [application]
 
 config/name="Simple Music Player"
-run/main_scene="res://ui/main.tscn"
+run/main_scene="res://ui/Main.tscn"
 run/low_processor_mode=true
 config/icon="res://icon.png"
 config/windows_native_icon="res://icon.ico"

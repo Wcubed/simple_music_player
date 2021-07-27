@@ -22,7 +22,7 @@ enum {TASK_SCAN_SONGS, TASK_LOAD_COVER_IMAGE}
 const AUDIO_FILE_FILTERS := ["*.wav", "*.ogg"]
 const COVER_ART_FILE_EXTENSIONS := ["jpg", "png"]
 
-var Song := preload("../song.gd")
+var Song := preload("../Song.gd")
 
 var _exit_thread := false
 
