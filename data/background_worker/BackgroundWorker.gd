@@ -74,7 +74,7 @@ func get_results() -> Array:
 	return results
 
 
-func _thread_background_worker(userdata):
+func _thread_background_worker(_userdata):
 	while true:
 		_work_semaphore.wait()
 

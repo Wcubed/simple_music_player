@@ -1,0 +1,102 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://ui/resources/main_theme.theme" type="Theme" id=1]
+[ext_resource path="res://ui/PlaylistUi.tscn" type="PackedScene" id=2]
+[ext_resource path="res://ui/Main.gd" type="Script" id=3]
+[ext_resource path="res://third_party/GDScriptAudioImport.gd" type="Script" id=4]
+[ext_resource path="res://data/Playlist.gd" type="Script" id=5]
+[ext_resource path="res://ui/PlaybackControls.tscn" type="PackedScene" id=6]
+[ext_resource path="res://data/Library.tscn" type="PackedScene" id=7]
+[ext_resource path="res://ui/OverlayControls.tscn" type="PackedScene" id=8]
+
+[node name="Main" type="PanelContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AudioImporter" type="Node" parent="."]
+script = ExtResource( 4 )
+
+[node name="Library" parent="." instance=ExtResource( 7 )]
+
+[node name="Playlist" type="Node" parent="."]
+script = ExtResource( 5 )
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+
+[node name="UpdateTimer" type="Timer" parent="."]
+wait_time = 0.5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+margin_left = 6.0
+margin_top = 4.0
+margin_right = 594.0
+margin_bottom = 656.0
+
+[node name="PlaylistUi" parent="VBoxContainer" instance=ExtResource( 2 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 588.0
+margin_bottom = 594.0
+
+[node name="PlaybackControls" parent="VBoxContainer" instance=ExtResource( 6 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 598.0
+margin_right = 588.0
+margin_bottom = 652.0
+
+[node name="OverlayControls" parent="VBoxContainer" instance=ExtResource( 8 )]
+visible = false
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 624.0
+margin_right = 588.0
+margin_bottom = 652.0
+
+[node name="SongLoadDialog" type="FileDialog" parent="."]
+margin_left = 5.0
+margin_top = 5.0
+margin_right = 1019.0
+margin_bottom = 595.0
+theme = ExtResource( 1 )
+window_title = "Open a File or Directory"
+resizable = true
+mode = 3
+access = 2
+current_dir = "/media/data/WybeData/Library/Music/youtube-dl"
+current_path = "/media/data/WybeData/Library/Music/youtube-dl/"
+
+[connection signal="cover_image_loaded" from="Library" to="." method="_on_Library_cover_image_loaded"]
+[connection signal="songs_added" from="Library" to="." method="_on_Library_songs_added"]
+[connection signal="songs_added" from="Library" to="Playlist" method="_on_songs_added_to_library"]
+[connection signal="songs_removed" from="Library" to="." method="_on_Library_songs_removed"]
+[connection signal="songs_removed" from="Library" to="Playlist" method="_on_songs_removed_from_library"]
+[connection signal="currently_playing_updated" from="Playlist" to="VBoxContainer/PlaylistUi" method="_on_playlist_currently_playing_updated"]
+[connection signal="song_added" from="Playlist" to="VBoxContainer/PlaylistUi" method="_on_playlist_song_added"]
+[connection signal="song_removed" from="Playlist" to="VBoxContainer/PlaylistUi" method="_on_playlist_song_removed"]
+[connection signal="finished" from="AudioStreamPlayer" to="." method="_on_AudioStreamPlayer_finished"]
+[connection signal="timeout" from="UpdateTimer" to="." method="_on_UpdateTimer_timeout"]
+[connection signal="add_song_to_library_requested" from="VBoxContainer/PlaylistUi" to="." method="_on_PlaylistUi_add_song_to_library_requested"]
+[connection signal="add_song_to_playlist_requested" from="VBoxContainer/PlaylistUi" to="." method="_on_PlaylistUi_add_song_to_playlist_requested"]
+[connection signal="play_song_by_index_requested" from="VBoxContainer/PlaylistUi" to="." method="_on_PlaylistUi_play_song_by_index_requested"]
+[connection signal="remove_song_by_index_requested" from="VBoxContainer/PlaylistUi" to="." method="_on_PlaylistUi_remove_song_by_index_requested"]
+[connection signal="infinite_playlist_button_toggled" from="VBoxContainer/PlaybackControls" to="." method="_on_PlaybackControls_infinite_playlist_button_toggled"]
+[connection signal="next_song_requested" from="VBoxContainer/PlaybackControls" to="." method="_on_PlaybackControls_next_song_requested"]
+[connection signal="overlay_ui_requested" from="VBoxContainer/PlaybackControls" to="." method="_on_PlaybackControls_overlay_ui_requested"]
+[connection signal="pause_requested" from="VBoxContainer/PlaybackControls" to="." method="_on_PlaybackControls_pause_requested"]
+[connection signal="play_requested" from="VBoxContainer/PlaybackControls" to="." method="_on_PlaybackControls_play_requested"]
+[connection signal="previous_song_requested" from="VBoxContainer/PlaybackControls" to="." method="_on_PlaybackControls_previous_song_requested"]
+[connection signal="seek_requested" from="VBoxContainer/PlaybackControls" to="." method="_on_PlaybackControls_seek_requested"]
+[connection signal="volume_change_requested" from="VBoxContainer/PlaybackControls" to="." method="_on_PlaybackControls_volume_change_requested"]
+[connection signal="large_ui_requested" from="VBoxContainer/OverlayControls" to="." method="_on_OverlayControls_large_ui_requested"]
+[connection signal="next_song_requested" from="VBoxContainer/OverlayControls" to="." method="_on_OverlayControls_next_song_requested"]
+[connection signal="pause_requested" from="VBoxContainer/OverlayControls" to="." method="_on_OverlayControls_pause_requested"]
+[connection signal="play_requested" from="VBoxContainer/OverlayControls" to="." method="_on_OverlayControls_play_requested"]
+[connection signal="previous_song_requested" from="VBoxContainer/OverlayControls" to="." method="_on_OverlayControls_previous_song_requested"]
+[connection signal="dir_selected" from="SongLoadDialog" to="." method="_on_SongLoadDialog_dir_selected"]
+[connection signal="file_selected" from="SongLoadDialog" to="." method="_on_SongLoadDialog_file_selected"]
+[connection signal="files_selected" from="SongLoadDialog" to="." method="_on_SongLoadDialog_files_selected"]

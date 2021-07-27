@@ -2,22 +2,18 @@ extends HBoxContainer
 
 signal play_requested()
 signal pause_requested()
-signal seek_requested(seconds)
 signal next_song_requested()
 signal previous_song_requested()
+
+signal seek_requested(seconds)
 # Volume is in range [0, 1]
 signal volume_change_requested(new_volume)
 signal infinite_playlist_button_toggled(new_state)
-signal small_ui_button_toggled(new_state)
-
-export(Texture) var _play_icon = preload("resources/icons/icon_play.svg")
-export(Texture) var _pause_icon = preload("resources/icons/icon_pause.svg")
+signal overlay_ui_requested()
 
 export(Texture) var _volume_high = preload("resources/icons/icon_volume_high.svg")
 export(Texture) var _volume_mid = preload("resources/icons/icon_volume_mid.svg")
 export(Texture) var _volume_low = preload("resources/icons/icon_volume_low.svg")
-
-var _paused := true
 
 onready var _song_cover_image := $SongCoverImage
 
@@ -25,7 +21,7 @@ onready var _time_playing := $VBoxContainer/TopContainer/TimePlayingLabel
 onready var _total_time := $VBoxContainer/TopContainer/TotalTimeLabel
 onready var _song_progress := $VBoxContainer/TopContainer/SongProgress
 
-onready var _play_pause_button := $VBoxContainer/BottomContainer/PlayPauseButton
+onready var _playback_buttons := $VBoxContainer/BottomContainer/PlaybackButtons
 onready var _infinite_playlist_button := $VBoxContainer/BottomContainer/InfinitePlaylistButton
 onready var _small_ui_button := $VBoxContainer/BottomContainer/SmallUIButton
 onready var _song_title := $VBoxContainer/BottomContainer/SongTitleLabel
@@ -37,7 +33,6 @@ onready var _volume_slider := $VBoxContainer/BottomContainer/VolumeSlider
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	update_time_playing(0)
-	update_paused(true)
 
 
 func is_infinite_playlist_enabled() -> bool:
@@ -57,11 +52,7 @@ func update_total_time(seconds: float):
 
 
 func update_paused(paused: bool):
-	_paused = paused
-	if _paused:
-		_play_pause_button.icon = _play_icon
-	else:
-		_play_pause_button.icon = _pause_icon
+	_playback_buttons.update_paused(paused)
 
 
 func update_cover_image(image: ImageTexture):
@@ -102,26 +93,11 @@ func _seek_to_current_mouse_position():
 	emit_signal("seek_requested", seek)
 
 
-func _on_PlayPauseButton_pressed():
-	if _paused:
-		emit_signal("play_requested")
-	else:
-		emit_signal("pause_requested")
-
-
 func _on_SongProgress_gui_input(event: InputEvent):
 	if event.is_action_pressed("ui_seek_to_time"):
 		_seek_to_current_mouse_position()
 	elif event is InputEventMouseMotion and Input.is_action_pressed("ui_seek_to_time"):
 		_seek_to_current_mouse_position()
-
-
-func _on_NextSongButton_pressed():
-	emit_signal("next_song_requested")
-
-
-func _on_PreviousSongButton_pressed():
-	emit_signal("previous_song_requested")
 
 
 func _on_VolumeSlider_value_changed(value: float):
@@ -132,10 +108,21 @@ func _on_InfinitePlaylistButton_toggled(button_pressed: bool):
 	emit_signal("infinite_playlist_button_toggled", button_pressed)
 
 
-func _on_SmallUIButton_toggled(button_pressed: bool):
-	emit_signal("small_ui_button_toggled", button_pressed)
-	
-	if button_pressed:
-		_small_ui_button.text = "<>"
-	else:
-		_small_ui_button.text = "><"
+func _on_PlaybackButtons_next_song_requested():
+	emit_signal("next_song_requested")
+
+
+func _on_PlaybackButtons_previous_song_requested():
+	emit_signal("previous_song_requested")
+
+
+func _on_PlaybackButtons_play_requested():
+	emit_signal("play_requested")
+
+
+func _on_PlaybackButtons_pause_requested():
+	emit_signal("pause_requested")
+
+
+func _on_OverlayUIButton_pressed():
+	emit_signal("overlay_ui_requested")

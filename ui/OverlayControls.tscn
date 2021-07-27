@@ -1,0 +1,39 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://ui/PlaybackButtons.tscn" type="PackedScene" id=1]
+[ext_resource path="res://ui/OverlayControls.gd" type="Script" id=2]
+
+[node name="OverlayControls" type="HBoxContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PlaybackButtons" parent="." instance=ExtResource( 1 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 0.0
+margin_right = 110.0
+margin_bottom = 660.0
+
+[node name="LargeUIButton" type="Button" parent="."]
+margin_left = 114.0
+margin_right = 150.0
+margin_bottom = 660.0
+text = "VVV"
+
+[node name="SongTitleLabel" type="Label" parent="."]
+margin_left = 154.0
+margin_top = 319.0
+margin_right = 454.0
+margin_bottom = 341.0
+rect_min_size = Vector2( 300, 0 )
+clip_text = true
+
+[connection signal="next_song_requested" from="PlaybackButtons" to="." method="_on_PlaybackButtons_next_song_requested"]
+[connection signal="pause_requested" from="PlaybackButtons" to="." method="_on_PlaybackButtons_pause_requested"]
+[connection signal="play_requested" from="PlaybackButtons" to="." method="_on_PlaybackButtons_play_requested"]
+[connection signal="previous_song_requested" from="PlaybackButtons" to="." method="_on_PlaybackButtons_previous_song_requested"]
+[connection signal="pressed" from="LargeUIButton" to="." method="_on_LargeUIButton_pressed"]
