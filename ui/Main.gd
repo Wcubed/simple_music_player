@@ -100,6 +100,7 @@ func _pause_audio():
 	_stream_player.stream_paused = true
 
 	_playback_controls.update_paused(true)
+	_overlay_controls.update_paused(true)
 
 
 func _audio_finished():
