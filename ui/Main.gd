@@ -8,6 +8,7 @@ var _playback_time: float = 0
 
 var _large_ui_window_size := Vector2(0, 0)
 var _large_ui_window_position := Vector2(0, 0)
+var _overlay_ui_position = null
 
 var _no_padding_panel := preload("resources/no_padding_panel.stylebox")
 
@@ -145,10 +146,14 @@ func _switch_to_overlay_ui():
 	
 	OS.set_window_always_on_top(true)
 	OS.window_borderless = true
-	OS.window_position = Vector2(100, 0)
+	
+	if _overlay_ui_position != null:
+		OS.window_position = _overlay_ui_position
 
 
 func _switch_to_large_ui():
+	_overlay_ui_position = OS.window_position
+	
 	OS.window_position = _large_ui_window_position
 	OS.set_window_always_on_top(false)
 	OS.window_borderless = false

@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://ui/PlaybackButtons.tscn" type="PackedScene" id=1]
 [ext_resource path="res://ui/OverlayControls.gd" type="Script" id=2]
+[ext_resource path="res://ui/WindowDrag.tscn" type="PackedScene" id=3]
 
 [node name="OverlayControls" type="HBoxContainer"]
 anchor_right = 1.0
@@ -11,23 +12,29 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="WindowDrag" parent="." instance=ExtResource( 3 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 10.0
+margin_bottom = 660.0
+
 [node name="PlaybackButtons" parent="." instance=ExtResource( 1 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 0.0
-margin_right = 110.0
+margin_left = 14.0
+margin_right = 124.0
 margin_bottom = 660.0
 
 [node name="LargeUIButton" type="Button" parent="."]
-margin_left = 114.0
-margin_right = 150.0
+margin_left = 128.0
+margin_right = 164.0
 margin_bottom = 660.0
 text = "VVV"
 
 [node name="SongTitleLabel" type="Label" parent="."]
-margin_left = 154.0
+margin_left = 168.0
 margin_top = 319.0
-margin_right = 454.0
+margin_right = 468.0
 margin_bottom = 341.0
 rect_min_size = Vector2( 300, 0 )
 clip_text = true
