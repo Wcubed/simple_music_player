@@ -12,6 +12,7 @@ var _overlay_ui_position = null
 
 var _no_padding_panel := preload("resources/no_padding_panel.stylebox")
 
+onready var _config := $Config
 onready var _library := $Library
 onready var _playlist := $Playlist
 onready var _audio_importer := $AudioImporter
@@ -23,24 +24,29 @@ onready var _playlist_ui := $VBoxContainer/PlaylistUi
 onready var _playback_controls := $VBoxContainer/PlaybackControls
 onready var _overlay_controls := $VBoxContainer/OverlayControls
 
-onready var _song_load_dialog := $SongLoadDialog
+onready var _library_folder_select_dialog := $LibraryFolderSelectDialog
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	_song_load_dialog.filters = _library._background_worker.AUDIO_FILE_FILTERS
+	_config.load_from_disk()
+	
+	_library_folder_select_dialog.filters = _library._background_worker.AUDIO_FILE_FILTERS
 	_playlist_ui.set_library(_library)
 	_playlist.set_infinite(_playback_controls.is_infinite_playlist_enabled())
 	_update_song_count()
 	
 	_set_volume(0.8)
 	
+	var library_folder: String = _config.library_folder()
+	_switch_to_new_library_folder(library_folder)
+	
 	# Prevent sizing the window so small that the UI doesn't fit anymore.
 	OS.min_window_size = get_combined_minimum_size()
 
 
-func _show_file_popup():
-	_song_load_dialog.popup_centered(Vector2(700, 400))
+func _show_library_dialog_popup():
+	_library_folder_select_dialog.popup_centered(Vector2(700, 400))
 
 
 func _update_song_count():
@@ -169,6 +175,17 @@ func _switch_to_large_ui():
 	var min_size := get_combined_minimum_size()
 
 
+func _switch_to_new_library_folder(folder: String):
+	var dir := Directory.new()
+	
+	if folder != "" && dir.dir_exists(folder):
+		_library.clear_songs()
+		_library.queue_scan_for_songs(folder)
+		
+		_config.set_library_folder(folder)
+		_config.save_to_disk()
+
+
 func _unhandled_key_input(event):
 	if event.is_action_pressed("ui_right"):
 		_seek_timecode(_stream_player.get_playback_position() + 10)
@@ -205,17 +222,8 @@ func _on_AudioStreamPlayer_finished():
 	_audio_finished()
 
 
-func _on_SongLoadDialog_file_selected(path: String):
-	_library.queue_scan_for_songs(path)
-
-
-func _on_SongLoadDialog_files_selected(paths: Array):
-	for path in paths:
-		_library.queue_scan_for_songs(path)
-
-
-func _on_SongLoadDialog_dir_selected(dir: String):
-	_library.queue_scan_for_songs(dir)
+func _on_LibaryFolderSelectDialog_dir_selected(dir: String):
+	_switch_to_new_library_folder(dir)
 
 
 func _on_PlaybackControls_next_song_requested():
@@ -249,10 +257,6 @@ func _on_PlaylistUi_remove_song_by_index_requested(idx: int):
 	if _playlist.get_current_song_idx() == idx:
 		# If the currently playing song was deleted, 
 		_play_song_by_idx(idx)
-
-
-func _on_PlaylistUi_add_song_to_library_requested():
-	_show_file_popup()
 
 
 func _on_PlaylistUi_add_song_to_playlist_requested(id: int):
@@ -289,3 +293,7 @@ func _on_OverlayControls_play_requested():
 
 func _on_OverlayControls_previous_song_requested():
 	_play_previous_song()
+
+
+func _on_PlaylistUi_select_library_folder_requested():
+	_show_library_dialog_popup()

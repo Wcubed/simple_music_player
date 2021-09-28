@@ -5,8 +5,8 @@ extends VBoxContainer
 signal play_song_by_index_requested(idx)
 # Emitted when the user wants to remove a song from the playlist.
 signal remove_song_by_index_requested(idx)
-# User requested to open the file browser to add songs to the library.
-signal add_song_to_library_requested()
+
+signal select_library_folder_requested()
 # User requested to add a specific song to the playlist.
 # This is the song id as listed in the library, not the playlist index.
 signal add_song_to_playlist_requested(id)
@@ -147,10 +147,6 @@ func _on_entry_remove_button_pressed(idx: int):
 	emit_signal("remove_song_by_index_requested", idx)
 
 
-func _on_AddSongButton_pressed():
-	emit_signal("add_song_to_library_requested")
-
-
 func _on_ClearSearchButton_pressed():
 	clear_library_search()
 
@@ -183,3 +179,6 @@ func _on_SearchPopup_index_pressed(index: int):
 		
 		clear_library_search()
 
+
+func _on_SelectLibraryFolderButton_pressed():
+	emit_signal("select_library_folder_requested")

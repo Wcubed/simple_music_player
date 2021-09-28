@@ -73,6 +73,12 @@ func add_songs(songs: Array):
 	emit_signal("songs_added", new_song_ids)
 
 
+func clear_songs():
+	var ids := _songs.keys()
+	_songs.clear()
+	emit_signal("songs_removed", _songs)
+
+
 func _on_BackgroundWorker_results_ready():
 	var results: Array = _background_worker.get_results()
 	
@@ -85,5 +91,6 @@ func _on_BackgroundWorker_results_ready():
 			var id: int = result["song_id"]
 			var image: ImageTexture = result["image"]
 			
-			_songs[id].image = image
-			emit_signal("cover_image_loaded", id, image)
+			if _songs.has(id):
+				_songs[id].image = image
+				emit_signal("cover_image_loaded", id, image)

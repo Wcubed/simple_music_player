@@ -23,7 +23,6 @@ onready var _song_progress := $VBoxContainer/TopContainer/SongProgress
 
 onready var _playback_buttons := $VBoxContainer/BottomContainer/PlaybackButtons
 onready var _infinite_playlist_button := $VBoxContainer/BottomContainer/InfinitePlaylistButton
-onready var _small_ui_button := $VBoxContainer/BottomContainer/SmallUIButton
 onready var _song_title := $VBoxContainer/BottomContainer/SongTitleLabel
 
 onready var _volume_icon := $VBoxContainer/BottomContainer/VolumeIcon
