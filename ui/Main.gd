@@ -79,10 +79,13 @@ func _play_song(song: Object):
 
 	_playback_controls.update_song_title(song.title)
 	_overlay_controls.update_song_title(song.title)
+	
+	_playback_controls.update_cover_image(song.image)
+	_overlay_controls.update_cover_image(song.image)
+	
 	_playback_controls.update_total_time(_stream_total_length)
 	_playback_controls.update_time_playing(_playback_time)
-	_playback_controls.update_cover_image(song.image)
-
+	
 	_play_audio()
 
 

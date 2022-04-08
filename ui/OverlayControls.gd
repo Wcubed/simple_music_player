@@ -9,6 +9,7 @@ signal large_ui_requested()
 
 onready var _playback_buttons := $PlaybackButtons
 onready var _song_title := $SongTitleLabel
+onready var _cover_image := $CoverImage
 
 
 func _ready():
@@ -17,6 +18,10 @@ func _ready():
 
 func update_song_title(title: String):
 	_song_title.text = title
+
+
+func update_cover_image(image: ImageTexture):
+	_cover_image.texture = image
 
 
 func update_paused(paused: bool):

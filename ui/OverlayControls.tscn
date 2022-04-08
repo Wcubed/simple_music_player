@@ -7,35 +7,42 @@
 [node name="OverlayControls" type="HBoxContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+margin_bottom = -632.0
 script = ExtResource( 2 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="WindowDrag" parent="." instance=ExtResource( 3 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_right = 10.0
-margin_bottom = 660.0
+margin_right = 12.0
+margin_bottom = 28.0
 
 [node name="PlaybackButtons" parent="." instance=ExtResource( 1 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 14.0
-margin_right = 124.0
-margin_bottom = 660.0
+margin_left = 16.0
+margin_right = 126.0
+margin_bottom = 28.0
 
 [node name="LargeUIButton" type="Button" parent="."]
-margin_left = 128.0
-margin_right = 164.0
-margin_bottom = 660.0
+margin_left = 130.0
+margin_right = 166.0
+margin_bottom = 28.0
 text = "VVV"
 
+[node name="CoverImage" type="TextureRect" parent="."]
+margin_left = 170.0
+margin_right = 220.0
+margin_bottom = 28.0
+rect_min_size = Vector2( 50, 28 )
+size_flags_vertical = 3
+expand = true
+stretch_mode = 5
+
 [node name="SongTitleLabel" type="Label" parent="."]
-margin_left = 168.0
-margin_top = 319.0
-margin_right = 468.0
-margin_bottom = 341.0
+margin_left = 224.0
+margin_top = 3.0
+margin_right = 524.0
+margin_bottom = 25.0
 rect_min_size = Vector2( 300, 0 )
 clip_text = true
 

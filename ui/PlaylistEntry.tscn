@@ -8,9 +8,6 @@ anchor_bottom = 1.0
 mouse_filter = 0
 mouse_default_cursor_shape = 2
 script = ExtResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="CoverImage" type="TextureRect" parent="."]
 margin_right = 96.0
