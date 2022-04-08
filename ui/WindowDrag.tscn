@@ -13,8 +13,5 @@ mouse_default_cursor_shape = 13
 texture = ExtResource( 2 )
 stretch_mode = 4
 script = ExtResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [connection signal="gui_input" from="." to="." method="_on_WindowDrag_gui_input"]

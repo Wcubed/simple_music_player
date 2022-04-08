@@ -151,7 +151,6 @@ func _switch_to_overlay_ui():
 	var min_size := get_combined_minimum_size()
 	OS.min_window_size = min_size
 	OS.window_size = min_size
-	OS.max_window_size = min_size
 	
 	OS.set_window_always_on_top(true)
 	OS.window_borderless = true
@@ -245,6 +244,7 @@ func _on_PlaybackControls_previous_song_requested():
 func _on_Library_cover_image_loaded(song_id: int, image: ImageTexture):
 	if song_id == _playlist.get_current_song_id():
 		_playback_controls.update_cover_image(image)
+		_overlay_controls.update_cover_image(image)
 
 
 func _on_PlaylistUi_play_song_by_index_requested(idx: int):
