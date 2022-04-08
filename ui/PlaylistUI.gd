@@ -163,7 +163,7 @@ func _on_SearchLibraryEntry_gui_input(event: InputEvent):
 		clear_library_search()
 
 
-func _on_SearchLibraryEntry_text_entered(new_text: String):
+func _on_SearchLibraryEntry_text_entered(_new_text: String):
 	# On pressing enter, we add the topmost song from the search 
 	# results to the playlist.
 	if _search_popup.get_item_count() > 0:

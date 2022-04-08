@@ -176,6 +176,7 @@ func _switch_to_large_ui():
 	_playback_controls.show()
 	
 	var min_size := get_combined_minimum_size()
+	OS.min_window_size = min_size
 
 
 func _switch_to_new_library_folder(folder: String):

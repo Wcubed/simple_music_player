@@ -76,7 +76,7 @@ func add_songs(songs: Array):
 func clear_songs():
 	var ids := _songs.keys()
 	_songs.clear()
-	emit_signal("songs_removed", _songs)
+	emit_signal("songs_removed", ids)
 
 
 func _on_BackgroundWorker_results_ready():
