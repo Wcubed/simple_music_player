@@ -82,6 +82,8 @@ func select_song_by_index(idx: int):
 	if _library_song_ids.empty() || _playlist.empty() && !_infinite_playlist:
 		return -1
 	
+	var prev_idx = _current_song_idx
+	
 	if idx < 0:
 		idx = _playlist.size() + idx
 	

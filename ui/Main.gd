@@ -10,6 +10,8 @@ var _large_ui_window_size := Vector2(0, 0)
 var _large_ui_window_position := Vector2(0, 0)
 var _overlay_ui_position = null
 
+var _current_song: Object = null
+
 var _no_padding_panel := preload("resources/no_padding_panel.stylebox")
 
 onready var _config := $Config
@@ -65,7 +67,14 @@ func _play_previous_song():
 
 func _play_song_by_idx(idx: int):
 	var song: Object = _library.get_song_by_id(_playlist.select_song_by_index(idx))
-	_play_song(song)
+	
+	# When this call is made, it is either because the user clicked a song,
+	# or because the currently playing song got moved around the playlist
+	# because of songs added or removed before it.
+	# In both cases, starting back at the beginning in the same song, isn't
+	# what we want.
+	if _current_song != song:
+		_play_song(song)
 
 
 func _play_song(song: Object):
@@ -86,6 +95,7 @@ func _play_song(song: Object):
 	_playback_controls.update_total_time(_stream_total_length)
 	_playback_controls.update_time_playing(_playback_time)
 	
+	_current_song = song
 	_play_audio()
 
 
