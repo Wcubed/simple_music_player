@@ -3,6 +3,7 @@ extends Node
 # The playlist_idx is where in the playlist this song was added.
 signal song_added(song_id, playlist_idx)
 signal song_removed(playlist_idx)
+signal song_moved(source_idx, target_idx)
 signal currently_playing_updated(song_idx)
 
 # The playlist keeps track of which songs to play from the library
@@ -98,6 +99,30 @@ func select_song_by_index(idx: int):
 	emit_signal("currently_playing_updated", _current_song_idx)
 	return _playlist[_current_song_idx]
 
+
+func move_song(idx: int, relative_idx: int):
+	if idx >= _playlist.size():
+		return
+	
+	var target_idx = idx + relative_idx
+	if target_idx < 0:
+		target_idx = 0
+	elif target_idx >= _playlist.size():
+		target_idx = _playlist.size() - 1
+	
+	var song = _playlist[idx]
+	
+	_playlist.remove(idx)
+	_playlist.insert(target_idx, song)
+
+	if idx == _current_song_idx:
+		_current_song_idx = target_idx
+	elif idx < target_idx and _current_song_idx >= idx and _current_song_idx <= target_idx:
+		_current_song_idx -= 1
+	elif idx > target_idx and _current_song_idx <= idx and _current_song_idx >= target_idx:
+		_current_song_idx += 1
+	
+	emit_signal("song_moved", idx, target_idx)
 
 # Call when the song library acquires new songs. This makes sure the
 # infinite playlist randomizer is up-to-date.

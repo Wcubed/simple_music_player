@@ -5,6 +5,9 @@ extends VBoxContainer
 signal play_song_by_index_requested(idx)
 # Emitted when the user wants to remove a song from the playlist.
 signal remove_song_by_index_requested(idx)
+# Emitted when the user wants to move a song up or down the playlist.
+# The relative_idx is positive or negative depending on the direction of the move.
+signal move_song_in_playlist_requested(idx, relative_idx)
 
 signal select_library_folder_requested()
 # User requested to add a specific song to the playlist.
@@ -64,6 +67,9 @@ func _on_playlist_song_added(song_id: int, playlist_idx: int):
 		"_on_entry_selected_by_pointer")
 	entry.connect("remove_button_pressed", self, \
 		"_on_entry_remove_button_pressed")
+	entry.connect("move_entry_requested", self, \
+		"_on_move_entry_requested")
+	
 	_libary.connect("cover_image_loaded", entry, "_on_library_cover_image_loaded")
 
 
@@ -182,3 +188,14 @@ func _on_SearchPopup_index_pressed(index: int):
 
 func _on_SelectLibraryFolderButton_pressed():
 	emit_signal("select_library_folder_requested")
+
+
+func _on_move_entry_requested(index: int, relative_idx: int):
+	emit_signal("move_song_in_playlist_requested", index, relative_idx)
+
+
+func _on_Playlist_song_moved(source_idx: int, target_idx: int):
+	if source_idx >= _container.get_child_count():
+		return
+	
+	_container.move_child(_container.get_child(source_idx), target_idx)

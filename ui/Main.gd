@@ -311,3 +311,7 @@ func _on_OverlayControls_previous_song_requested():
 
 func _on_PlaylistUi_select_library_folder_requested():
 	_show_library_dialog_popup()
+
+
+func _on_move_song_in_playlist_requested(idx: int, relative_idx: int):
+	_playlist.move_song(idx, relative_idx)

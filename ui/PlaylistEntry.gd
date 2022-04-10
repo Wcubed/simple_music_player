@@ -2,6 +2,7 @@ extends HBoxContainer
 
 signal selected_by_pointer(playlist_index)
 signal remove_button_pressed(playlist_index)
+signal move_entry_requested(playlist_index, relative_idx)
 
 const PLAYING_COLOR = Color(0.3, 1.0, 0.3)
 const NOT_PLAYING_COLOR = Color(0.9, 0.9, 0.9)
@@ -51,3 +52,19 @@ func _on_library_cover_image_loaded(song_id: int, image: ImageTexture):
 
 func _on_RemoveButton_pressed():
 	emit_signal("remove_button_pressed", get_index())
+
+
+func _on_PlaylistMoveHandle_gui_input(event: InputEvent):
+	if event is InputEventMouseMotion:
+		var global_mouse_pos: Vector2 = OS.window_position + event.position
+		
+		if Input.is_action_pressed("ui_window_drag_control"):
+			var local_pos := get_local_mouse_position()
+			if local_pos.y < 0 or local_pos.y >= rect_size.y:
+				# At this moment 2022-04-10 all the playlist entries have
+				# the same height. So we can calculate how much we want to go
+				# up or down.
+				var move = floor(local_pos.y / rect_size.y)
+				emit_signal("move_entry_requested", get_index(), move)
+			
+

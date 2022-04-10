@@ -9,6 +9,7 @@ anchor_bottom = 1.0
 margin_right = -590.0
 margin_bottom = -646.0
 rect_min_size = Vector2( 10, 0 )
+mouse_filter = 0
 mouse_default_cursor_shape = 13
 texture = ExtResource( 2 )
 stretch_mode = 4
