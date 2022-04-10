@@ -10,7 +10,7 @@ signal currently_playing_updated(song_idx)
 
 # How many songs there will be at minimum between the current song and the
 # end of an infinite playlist.
-const INFINITE_PLAYLIST_NEXT_SONGS_BUFFER := 4
+const INFINITE_PLAYLIST_NEXT_SONGS_BUFFER := 8
 # How many songs to keep as "history" when running an infinite playlist.
 const INFINITE_PLAYLIST_MAX_HISTORY := 4
 
