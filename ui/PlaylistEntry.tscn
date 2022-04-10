@@ -46,5 +46,11 @@ text = "X"
 flat = true
 
 [connection signal="gui_input" from="." to="." method="_on_PlaylistEntry_gui_input"]
+[connection signal="mouse_entered" from="." to="." method="_on_PlaylistEntry_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_PlaylistEntry_mouse_exited"]
 [connection signal="gui_input" from="PlaylistMoveHandle" to="." method="_on_PlaylistMoveHandle_gui_input"]
+[connection signal="mouse_entered" from="PlaylistMoveHandle" to="." method="_on_PlaylistMoveHandle_mouse_entered"]
+[connection signal="mouse_exited" from="PlaylistMoveHandle" to="." method="_on_PlaylistMoveHandle_mouse_exited"]
+[connection signal="mouse_entered" from="RemoveButton" to="." method="_on_RemoveButton_mouse_entered"]
+[connection signal="mouse_exited" from="RemoveButton" to="." method="_on_RemoveButton_mouse_exited"]
 [connection signal="pressed" from="RemoveButton" to="." method="_on_RemoveButton_pressed"]

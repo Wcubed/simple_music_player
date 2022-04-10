@@ -11,12 +11,26 @@ var _song_id := -1
 
 onready var _cover_image := $CoverImage
 onready var _title := $Title
+onready var _move_handle := $PlaylistMoveHandle
+onready var _remove_button := $RemoveButton
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	show_currently_playing(false)
+	
+	hide_controls()
 
+
+func show_controls():
+	_move_handle.modulate.a = 1
+	_remove_button.modulate.a = 1
+
+func hide_controls():
+	_move_handle.modulate.a = 0
+	_remove_button.modulate.a = 0
+	
+	_remove_button.flat = true
 
 func get_title():
 	return _title.text
@@ -42,7 +56,7 @@ func show_currently_playing(playing: bool):
 
 
 func _on_PlaylistEntry_gui_input(event: InputEvent):
-	if event.is_action_pressed("ui_pointer_select"):
+	if event.is_action_released("ui_pointer_select"):
 		emit_signal("selected_by_pointer", get_index())
 
 func _on_library_cover_image_loaded(song_id: int, image: ImageTexture):
@@ -68,3 +82,24 @@ func _on_PlaylistMoveHandle_gui_input(event: InputEvent):
 				emit_signal("move_entry_requested", get_index(), move)
 			
 
+func _on_PlaylistEntry_mouse_entered():
+	show_controls()
+
+func _on_PlaylistEntry_mouse_exited():
+	hide_controls()
+
+
+func _on_RemoveButton_mouse_entered():
+	show_controls()
+	_remove_button.flat = false
+
+func _on_RemoveButton_mouse_exited():
+	_remove_button.flat = true
+
+
+func _on_PlaylistMoveHandle_mouse_entered():
+	show_controls()
+
+
+func _on_PlaylistMoveHandle_mouse_exited():
+	hide_controls()
