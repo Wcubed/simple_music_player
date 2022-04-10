@@ -85,24 +85,16 @@ func select_song_by_index(idx: int):
 	if idx < 0:
 		idx = _playlist.size() + idx
 	
+	if _playlist.size() == 0:
+		_current_song_idx = 0
+	else:
+		_current_song_idx = idx % _playlist.size()
+	
 	if _infinite_playlist:
-		# The infinite playlist grows before it reaches the end.
-		# The end of the list is always at least a certain amount of songs
-		# ahead of the current song.
-		while _playlist.size() <= idx + INFINITE_PLAYLIST_NEXT_SONGS_BUFFER:
-			_append_random_song()
-		
-		# The infinite playlist only keeps a certain amount of songs behind
-		# the current song.
-		while idx > INFINITE_PLAYLIST_MAX_HISTORY:
-			remove_song_at_index(0)
-			idx -= 1
+		_append_and_remove_for_infinite_playlist()
 	
-	idx = idx % _playlist.size()
-	_current_song_idx = idx
-	
-	emit_signal("currently_playing_updated", idx)
-	return _playlist[idx]
+	emit_signal("currently_playing_updated", _current_song_idx)
+	return _playlist[_current_song_idx]
 
 
 # Call when the song library acquires new songs. This makes sure the
@@ -155,8 +147,29 @@ func add_song_after_current_song(song_id: int):
 func remove_song_at_index(song_index: int):
 	if song_index < _current_song_idx:
 		_current_song_idx -= 1
+	
 	_playlist.remove(song_index)
 	emit_signal("song_removed", song_index)
+	
+	if _infinite_playlist:
+		# By refilling on song removal, the user can simply remove
+		# songs from the playlist they don't want to hear, and the playlist
+		# will suggest a new unplayed song automatically.
+		_append_and_remove_for_infinite_playlist()
 
 func _refill_songs_left_till_library_repeat():
 	_songs_left_till_library_repeat = _library_song_ids.duplicate()
+
+
+func _append_and_remove_for_infinite_playlist():
+	# The infinite playlist grows before it reaches the end.
+	# The end of the list is always at least a certain amount of songs
+	# ahead of the current song.
+	while _playlist.size() <= _current_song_idx + INFINITE_PLAYLIST_NEXT_SONGS_BUFFER:
+		_append_random_song()
+	
+	
+	# The infinite playlist only keeps a certain amount of songs behind
+	# the current song.
+	while _current_song_idx > INFINITE_PLAYLIST_MAX_HISTORY:
+		remove_song_at_index(0)
